@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @modified mdmbct
  * @since 0.1
  */
-public class TokenBucketLimitingFilter extends BaseFilter {
+public class TokenBucketLimitingFilter extends Filter {
 
     private final RateLimiter rateLimiter;
 

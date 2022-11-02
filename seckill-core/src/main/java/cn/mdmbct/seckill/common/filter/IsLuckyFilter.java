@@ -8,7 +8,7 @@ import cn.mdmbct.seckill.common.Participant;
  * @modified mdmbct
  * @since 0.1
  */
-public class IsLuckyFilter extends BaseFilter {
+public class IsLuckyFilter extends Filter {
     public IsLuckyFilter(int order) {
         super(order);
     }

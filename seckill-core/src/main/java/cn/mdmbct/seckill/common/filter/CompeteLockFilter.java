@@ -12,7 +12,7 @@ import cn.mdmbct.seckill.common.lock.ProductLock;
  * @modified mdmbct
  * @since 0.1
  */
-public class CompeteLockFilter extends BaseFilter {
+public class CompeteLockFilter extends Filter {
 
     private final ProductLock lock;
 

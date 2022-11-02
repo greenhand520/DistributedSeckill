@@ -18,8 +18,11 @@ public class FilterChain {
 
     private final List<Filter> filters;
 
+    private final ThreadLocal<FilterContext> contextThreadLocal;
+
     public FilterChain(List<Filter> filters) {
         this.filters = filters;
+        this.contextThreadLocal = new ThreadLocal<>();
         init();
     }
 
@@ -41,6 +44,7 @@ public class FilterChain {
         for (int i = 0; i < filters.size(); i++) {
 
             Filter filter = filters.get(i);
+            filter.setContextThreadLocal(contextThreadLocal);
             if (i == filters.size() - 1) {
                 filter.nextFilter(null);
                 return;

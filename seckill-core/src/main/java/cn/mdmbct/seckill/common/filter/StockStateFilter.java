@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @modified mdmbct
  * @since 0.1
  */
-public class StockStateFilter extends BaseFilter {
+public class StockStateFilter extends Filter {
 
     private boolean haveStock = true;
 

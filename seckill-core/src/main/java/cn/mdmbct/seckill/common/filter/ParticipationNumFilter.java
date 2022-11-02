@@ -8,7 +8,7 @@ import cn.mdmbct.seckill.common.Participant;
  * @modified mdmbct
  * @since 0.1
  */
-public class ParticipationNumFilter extends BaseFilter {
+public class ParticipationNumFilter extends Filter {
 
     private final int participationNum;
 

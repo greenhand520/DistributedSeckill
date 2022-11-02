@@ -88,6 +88,10 @@ public class FilterContext {
         return sb.toString();
     }
 
+    /**
+     * 将竞争到的锁保存到Context中，只在竞争到锁才调用
+     * @param lock
+     */
     public void setLock(ProductLock lock) {
         this.competedLock = lock;
         this.isCompetedLock = true;

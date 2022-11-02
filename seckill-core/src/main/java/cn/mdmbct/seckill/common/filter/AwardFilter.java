@@ -16,7 +16,7 @@ import cn.mdmbct.seckill.common.repository.ProductsRepository;
  * @modified mdmbct
  * @since 0.1
  */
-public class AwardFilter extends BaseFilter {
+public class AwardFilter extends Filter {
 
     private final ProductsRepository productsRepository;
 

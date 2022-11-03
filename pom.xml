@@ -18,6 +18,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <seckill-core.version>0.1</seckill-core.version>
+        <seckill-starter.version>0.1</seckill-starter.version>
         <spring-boot.version>2.5.3</spring-boot.version>
         <mysql.version>8.0.26</mysql.version>
         <druid.version>1.2.6</druid.version>
@@ -25,8 +26,8 @@
         <disruptor.version>3.4.4</disruptor.version>
         <guava.version>18.0</guava.version>
         <lombok.version>1.18.20</lombok.version>
-        <jedis.version>3.3.0</jedis.version>
-        <redisson.version>3.13.6</redisson.version>
+        <jedis.version>4.3.0</jedis.version>
+        <redisson.version>3.17.7</redisson.version>
         <junit.version>4.13.2</junit.version>
         <sl4j.version>1.7.30</sl4j.version>
     </properties>
@@ -39,7 +40,11 @@
                 <artifactId>seckill-core</artifactId>
                 <version>${seckill-core.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>cn.mdmbct</groupId>
+                <artifactId>seckill-starter</artifactId>
+                <version>${seckill-starter.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -118,6 +123,11 @@
                 <version>${sl4j.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${sl4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
@@ -135,6 +145,14 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
         </dependency>
     </dependencies>
 

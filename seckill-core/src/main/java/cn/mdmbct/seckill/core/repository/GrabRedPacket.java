@@ -1,8 +1,11 @@
-package cn.mdmbct.seckill.core.repository.money;
+package cn.mdmbct.seckill.core.repository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 抢红包配置
@@ -26,4 +29,10 @@ public class GrabRedPacket {
      * 开始时间
      */
     private final long startTime;
+
+    /**
+     * 持续时间 单位：秒
+     */
+    private final long ttl;
+
 }

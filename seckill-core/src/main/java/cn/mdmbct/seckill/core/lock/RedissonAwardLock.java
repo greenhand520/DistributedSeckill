@@ -6,14 +6,14 @@ import org.redisson.api.RedissonClient;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redisson分布式锁
+ * Redisson实现的分布式锁 适用于多节点
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/18 19:30
  * @modified mdmbct
  * @since 0.1
  */
-public class RedissonDistributeLock implements ProductLock {
+public class RedissonAwardLock implements AwardLock {
 
     private final RedissonClient redissonClient;
 
@@ -30,7 +30,7 @@ public class RedissonDistributeLock implements ProductLock {
      * @param redissonClient  redisson客户端
      * @param lockCachePrefix 锁前缀
      */
-    public RedissonDistributeLock(RedissonClient redissonClient, String lockCachePrefix) {
+    public RedissonAwardLock(RedissonClient redissonClient, String lockCachePrefix) {
         if (lockCachePrefix == null || lockCachePrefix.length() == 0) {
             throw new IllegalArgumentException("参数‘lockCachePrefix’不能为空");
         }
@@ -38,11 +38,11 @@ public class RedissonDistributeLock implements ProductLock {
         this.lockCachePrefix = lockCachePrefix;
     }
 
-    public RedissonDistributeLock(RedissonClient redissonClient,
-                                  int lockWaitTime,
-                                  int lockExpireTime,
-                                  TimeUnit timeUnit,
-                                  String lockCachePrefix) {
+    public RedissonAwardLock(RedissonClient redissonClient,
+                             int lockWaitTime,
+                             int lockExpireTime,
+                             TimeUnit timeUnit,
+                             String lockCachePrefix) {
 
         if (lockWaitTime <= 0 || lockExpireTime <= 0) {
             throw new IllegalArgumentException("参数‘lockWaitTime’和‘lockExpireTime’都必须大于0");
@@ -84,11 +84,6 @@ public class RedissonDistributeLock implements ProductLock {
         redissonClient.getLock(cacheKey(id)).unlock();
     }
 
-
-    @Override
-    public ProductLockType getType() {
-        return ProductLockType.REDISSON;
-    }
 
     private String cacheKey(String id) {
         return lockCachePrefix + id;

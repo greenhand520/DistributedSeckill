@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.lock.ProductLock;
+import cn.mdmbct.seckill.core.lock.AwardLock;
 
 /**
  * 竞争锁过滤，倒数第二个过滤器 <br>
@@ -14,9 +14,9 @@ import cn.mdmbct.seckill.core.lock.ProductLock;
  */
 public class CompeteLockFilter extends Filter {
 
-    private final ProductLock lock;
+    private final AwardLock lock;
 
-    public CompeteLockFilter(ProductLock lock) {
+    public CompeteLockFilter(AwardLock lock) {
         super(LAST_FILTER_ORDER - 1);
         this.lock = lock;
     }
@@ -31,7 +31,6 @@ public class CompeteLockFilter extends Filter {
         // 创建锁并尝试获取锁
         final boolean b = lock.tryLock(productId);
         if (b) {
-//            System.out.println(Thread.currentThread().getId());
             getFilterContext().setCompetedLock(lock);
             doNextFilter(participant, productId);
         } else {

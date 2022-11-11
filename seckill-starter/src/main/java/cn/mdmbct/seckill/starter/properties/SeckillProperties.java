@@ -1,6 +1,6 @@
 package cn.mdmbct.seckill.starter.properties;
 
-import cn.mdmbct.seckill.core.lock.ProductLock;
+import cn.mdmbct.seckill.core.lock.AwardLock;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -21,7 +21,7 @@ public class SeckillProperties implements Serializable {
 
     private static final long serialVersionUID = -1365524205210850227L;
 
-    private ProductLock lock;
+    private AwardLock lock;
 
     private RedisDistributeLockProperties redisDistributeLockProperties;
 

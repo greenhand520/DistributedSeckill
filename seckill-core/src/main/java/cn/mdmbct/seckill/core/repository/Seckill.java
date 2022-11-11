@@ -1,6 +1,6 @@
-package cn.mdmbct.seckill.core.repository.seckill;
+package cn.mdmbct.seckill.core.repository;
 
-import cn.mdmbct.seckill.core.repository.Product;
+import cn.mdmbct.seckill.core.repository.Award;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -27,17 +27,12 @@ public class Seckill implements Serializable {
      */
     private final String id;
 
-    private final List<Product> goods;
+    private final List<Award> awards;
 
     /**
-     * 秒杀持续时间
+     * 秒杀持续时间 单位：秒
      */
-    private final long duration;
-
-    /**
-     * 持续时间的单位
-     */
-    private final TimeUnit timeUnit;
+    private final long ttl;
 
     /**
      * 开始时间

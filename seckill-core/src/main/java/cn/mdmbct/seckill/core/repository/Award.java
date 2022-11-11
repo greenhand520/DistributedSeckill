@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 产品
+ * 奖品
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/19 20:05
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Getter
 @EqualsAndHashCode
-public class Product implements Serializable {
+public class Award implements Serializable {
 
     private static final long serialVersionUID = -93160346279104104L;
 
@@ -27,7 +27,7 @@ public class Product implements Serializable {
      */
     protected final AtomicInteger remainCount;
 
-    public Product(String id, int remainCount) {
+    public Award(String id, int remainCount) {
         this.id = id;
         this.remainCount = new AtomicInteger(remainCount);
     }

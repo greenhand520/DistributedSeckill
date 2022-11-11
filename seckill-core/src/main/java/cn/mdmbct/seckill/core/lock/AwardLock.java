@@ -8,7 +8,7 @@ package cn.mdmbct.seckill.core.lock;
  * @modified mdmbct
  * @since 0.1
  */
-public interface ProductLock {
+public interface AwardLock {
 
     /**
      * 尝试加锁
@@ -25,5 +25,4 @@ public interface ProductLock {
      */
     void unLock(String id);
 
-    ProductLockType getType();
 }

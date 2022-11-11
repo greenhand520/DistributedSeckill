@@ -1,6 +1,7 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
+import cn.mdmbct.seckill.core.filter.Filter;
 
 /**
  * @author mdmbct  mdmbct@outlook.com

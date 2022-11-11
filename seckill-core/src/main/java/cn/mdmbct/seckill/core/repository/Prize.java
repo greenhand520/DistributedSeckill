@@ -1,6 +1,6 @@
-package cn.mdmbct.seckill.core.repository.lottery;
+package cn.mdmbct.seckill.core.repository;
 
-import cn.mdmbct.seckill.core.repository.Product;
+import cn.mdmbct.seckill.core.repository.Award;
 import lombok.*;
 
 import java.io.Serializable;
@@ -31,7 +31,7 @@ public class Prize implements Serializable {
 
     private AtomicInteger count;
 
-    private List<Product> awards;
+    private List<Award> awards;
 
     /**
      * 奖项自己就作为奖品
@@ -59,7 +59,7 @@ public class Prize implements Serializable {
      * @param id          id
      * @param awards      奖品
      */
-    public Prize(int level, String name, double probability, String id, List<Product> awards) {
+    public Prize(int level, String name, double probability, String id, List<Award> awards) {
         this.level = level;
         this.name = name;
         this.probability = probability;

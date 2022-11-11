@@ -3,7 +3,7 @@ package cn.mdmbct.seckill.core.filter;
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.context.FilterContext;
 import cn.mdmbct.seckill.core.lock.CompeteLockRes;
-import cn.mdmbct.seckill.core.repository.ProductsRepository;
+import cn.mdmbct.seckill.core.repository.AwardRepository;
 
 /**
  * 奖励过滤器，最后一个过滤器 <br>
@@ -18,9 +18,9 @@ import cn.mdmbct.seckill.core.repository.ProductsRepository;
  */
 public class AwardFilter extends Filter {
 
-    private final ProductsRepository productsRepository;
+    private final AwardRepository productsRepository;
 
-    public AwardFilter(ProductsRepository productsRepository) {
+    public AwardFilter(AwardRepository productsRepository) {
         super(LAST_FILTER_ORDER);
         this.productsRepository = productsRepository;
     }

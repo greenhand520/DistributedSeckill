@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.repository.lottery;
+package cn.mdmbct.seckill.core.repository;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Zookeeper分布式锁 <p>
+ * Zookeeper分布式锁  适用于多节点<p>
  * 优点：ZooKeeper分布式锁（这里使用InterProcessMutex），能有效的解决分布式问题，不可重入问题，使用起来也较为简单。 <p>
  * 缺点：ZooKeeper实现的分布式锁，性能并不太高。每次在创建锁和释放锁的过程中，都要动态创建、销毁瞬时节点来实现锁功能。
  * ZK中创建和删除节点只能通过Leader服务器来执行，然后Leader服务器还需要将数据同步到所有的Follower机器上，这样频繁的网络通信，性能的短板是非常突出的。
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 0.1
  */
-public class ZkDistributeLock implements ProductLock {
+public class ZkAwardLock implements AwardLock {
 
     private int baseSleepTimeMs = 1000;
 
@@ -52,19 +52,19 @@ public class ZkDistributeLock implements ProductLock {
      *
      * @param lockPath zk分布式锁节点目录，比如：“/curator/lock/seckill“，注意节点最后不能有”/“
      */
-    public ZkDistributeLock(String lockPath, List<String> productIds) {
+    public ZkAwardLock(String lockPath, List<String> productIds) {
         this.lockPath = lockPath;
         this.mutexMap = new HashMap<>(productIds.size());
         init(productIds);
     }
 
-    public ZkDistributeLock(String lockPath,
-                            int baseSleepTimeMs,
-                            int maxRetries,
-                            String address,
-                            long lockWaitTime,
-                            TimeUnit lockWaitTimeTimeUnit,
-                            List<String> productIds) {
+    public ZkAwardLock(String lockPath,
+                       int baseSleepTimeMs,
+                       int maxRetries,
+                       String address,
+                       long lockWaitTime,
+                       TimeUnit lockWaitTimeTimeUnit,
+                       List<String> productIds) {
         this.lockPath = lockPath;
         this.baseSleepTimeMs = baseSleepTimeMs;
         this.maxRetries = maxRetries;
@@ -105,8 +105,4 @@ public class ZkDistributeLock implements ProductLock {
         }
     }
 
-    @Override
-    public ProductLockType getType() {
-        return ProductLockType.ZK;
-    }
 }

@@ -25,7 +25,7 @@ public class FilterContext {
      * 竞争到的锁 这个锁对象是唯一的 释放锁之后会置空
      */
     @Getter
-    private ProductLock competedLock;
+    private AwardLock competedLock;
 
     @Getter
     private final Thread thread;
@@ -85,7 +85,7 @@ public class FilterContext {
      * 将竞争到的锁保存到Context中，只在竞争到锁才调用
      * @param lock
      */
-    public void setCompetedLock(ProductLock lock) {
+    public void setCompetedLock(AwardLock lock) {
         this.competedLock = lock;
     }
 

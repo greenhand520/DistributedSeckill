@@ -1,9 +1,8 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
+import cn.mdmbct.seckill.core.award.AwardRepository;
 import cn.mdmbct.seckill.core.context.FilterContext;
-import cn.mdmbct.seckill.core.lock.CompeteLockRes;
-import cn.mdmbct.seckill.core.repository.AwardRepository;
 
 /**
  * 奖励过滤器，最后一个过滤器 <br>
@@ -34,8 +33,8 @@ public class AwardFilter extends Filter {
     public void doFilter(Participant participant, String productId) {
         // 修改库存 并释放锁
 
-        final FilterContext filterContext = getFilterContext();
-        final CompeteLockRes competeLockRes = productsRepository.decrOne(productId);
+        FilterContext filterContext = getFilterContext();
+        AwardRepository.UpdateRes updateRes = productsRepository.decrOne(productId);
         filterContext.getCompetedLock().unLock(productId);
 
     }

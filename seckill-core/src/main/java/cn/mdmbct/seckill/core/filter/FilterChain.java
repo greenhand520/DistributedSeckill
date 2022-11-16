@@ -27,14 +27,17 @@ public class FilterChain {
     }
 
     /**
-     *  被多个线程调用到的方法
-     * @param participant 用户
+     * all the participant thread execute this method
+     * @param participant participant who compete the award
+     * @param awardId the id of award which the participant want to take. <br>
+     *                if the param value is null, it will random take an award.
+     *
      */
-    public void doFilter(Participant participant, String productId) {
+    public void doFilter(Participant participant, String awardId) {
         if (filters.size() != 0) {
             final Filter firstFilter = filters.get(0);
-            firstFilter.setFilterContext(new FilterContext(Thread.currentThread(), participant, productId));
-            firstFilter.doFilter(participant, productId);
+            firstFilter.setFilterContext(new FilterContext(Thread.currentThread(), participant, awardId));
+            firstFilter.doFilter(participant, awardId);
         }
     }
 

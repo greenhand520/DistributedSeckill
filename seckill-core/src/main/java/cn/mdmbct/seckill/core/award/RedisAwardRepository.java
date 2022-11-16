@@ -1,12 +1,7 @@
-package cn.mdmbct.seckill.core.repository;
+package cn.mdmbct.seckill.core.award;
 
-import cn.mdmbct.seckill.core.lock.HoldLockState;
-import cn.mdmbct.seckill.core.lock.AwardLock;
-import cn.mdmbct.seckill.core.lock.CompeteLockRes;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.util.Pool;
 
 import java.time.Duration;
 import java.util.Map;
@@ -26,14 +21,14 @@ public class RedisAwardRepository implements AwardRepository {
 
     private static final String COUNT_CACHE_PREFIX = "AwardCount:AWARD_ID_";
 
-    private Map<String, String> keyCache;
+    private final Map<String, String> keyCache;
 
-    public RedisAwardRepository(RedissonClient redissonClient, Seckill seckill) {
+    public RedisAwardRepository(RedissonClient redissonClient, AwardSeckill seckill) {
         this.redissonClient = redissonClient;
         keyCache = seckill.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> COUNT_CACHE_PREFIX + award.id));
 
         seckill.getAwards().forEach(award -> {
-            final RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.id));
+            RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.id));
             // 活动结束后5S过期
             awardCount.expireIfGreater(Duration.ofMillis(seckill.getStartTime() + seckill.getTtl() * 1000 + 5000));
             awardCount.set(award.remainCount.longValue());

@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.repository;
+package cn.mdmbct.seckill.core.award;
 
 import cn.mdmbct.seckill.core.lock.AwardLock;
 import lombok.Getter;

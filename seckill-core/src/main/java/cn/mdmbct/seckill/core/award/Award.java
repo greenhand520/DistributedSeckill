@@ -1,7 +1,8 @@
-package cn.mdmbct.seckill.core.repository;
+package cn.mdmbct.seckill.core.award;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,13 +28,20 @@ public class Award implements Serializable {
      */
     protected final AtomicInteger remainCount;
 
-    public Award(String id, int remainCount) {
+    private final int totalCount;
+
+    @Setter
+    protected double probability = 0;
+
+    public Award(String id, int totalCount) {
         this.id = id;
-        this.remainCount = new AtomicInteger(remainCount);
+        this.totalCount = totalCount;
+        this.remainCount = new AtomicInteger(totalCount);
     }
 
     /**
      * 增加1并返回新值
+     *
      * @return 新的数量
      */
     public int incrOne() {
@@ -42,6 +50,7 @@ public class Award implements Serializable {
 
     /**
      * 减少1并返回新值
+     *
      * @return 新的数量
      */
     public int decrOne() {
@@ -50,5 +59,14 @@ public class Award implements Serializable {
 
     public void update(int newCount) {
         remainCount.getAndSet(newCount);
+    }
+
+    public static class NoAward extends Award {
+        
+        public NoAward(double probability) {
+            super("no_award", 0);
+            this.probability = probability;
+        }
+
     }
 }

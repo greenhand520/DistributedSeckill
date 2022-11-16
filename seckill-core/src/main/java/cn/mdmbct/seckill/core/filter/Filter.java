@@ -70,12 +70,12 @@ public abstract class Filter implements Comparable<Filter> {
      * 设置下一个过滤器
      *
      * @param participant
-     * @param productId
+     * @param awardId
      */
-    protected void doNextFilter(Participant participant, String productId) {
+    protected void doNextFilter(Participant participant, String awardId) {
         getFilterContext().addFilterPassed(this);
         if (nextFilter != null) {
-            nextFilter.doFilter(participant, productId);
+            nextFilter.doFilter(participant, awardId);
         }
     }
 

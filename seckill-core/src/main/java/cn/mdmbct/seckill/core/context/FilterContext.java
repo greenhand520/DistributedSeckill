@@ -38,16 +38,16 @@ public class FilterContext {
     private Filter filterNotPassed;
 
     @Getter
-    private final String productId;
+    private final String awardId;
 
     @Getter
     private final Participant participant;
 
-    public FilterContext(Thread thread, Participant participant, String productId) {
+    public FilterContext(Thread thread, Participant participant, String awardId) {
         this.thread = thread;
         this.filtersPassed = new ArrayList<>();
         this.participant = participant;
-        this.productId = productId;
+        this.awardId = awardId;
     }
 
     public void addFilterPassed(Filter filter) {
@@ -90,7 +90,7 @@ public class FilterContext {
     }
 
     public void unlock() {
-        competedLock.unLock(productId);
+        competedLock.unLock(awardId);
         this.competedLock = null;
     }
 }

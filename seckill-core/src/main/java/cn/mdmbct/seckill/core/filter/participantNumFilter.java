@@ -1,7 +1,6 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.filter.Filter;
 
 /**
  * @author mdmbct  mdmbct@outlook.com
@@ -9,11 +8,11 @@ import cn.mdmbct.seckill.core.filter.Filter;
  * @modified mdmbct
  * @since 0.1
  */
-public class ParticipationNumFilter extends Filter {
+public class participantNumFilter extends Filter {
 
     private final int participationNum;
 
-    public ParticipationNumFilter(int order, int participationNum) {
+    public participantNumFilter(int order, int participationNum) {
         super(order);
         this.participationNum = participationNum;
     }

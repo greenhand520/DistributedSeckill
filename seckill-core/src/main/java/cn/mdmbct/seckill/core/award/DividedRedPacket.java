@@ -1,6 +1,5 @@
-package cn.mdmbct.seckill.core.award.red;
+package cn.mdmbct.seckill.core.award;
 
-import cn.mdmbct.seckill.core.award.Award;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

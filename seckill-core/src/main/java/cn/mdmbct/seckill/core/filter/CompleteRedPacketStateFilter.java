@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.red.GrabCompleteRedPacket;
+import cn.mdmbct.seckill.core.award.GrabCompleteRedPacket;
 
 /**
  * As the class name mean, is the last filter while you execute grab a complete red packet activity <br>

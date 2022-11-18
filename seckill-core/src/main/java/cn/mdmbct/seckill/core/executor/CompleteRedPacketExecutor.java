@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.executor;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.red.GrabCompleteRedPacket;
+import cn.mdmbct.seckill.core.award.GrabCompleteRedPacket;
 import cn.mdmbct.seckill.core.filter.CompleteRedPacketStateFilter;
 import cn.mdmbct.seckill.core.filter.Filter;
 

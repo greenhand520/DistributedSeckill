@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.lock;
 
 /**
- * prize lock interface
+ * award lock interface
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/18 19:27

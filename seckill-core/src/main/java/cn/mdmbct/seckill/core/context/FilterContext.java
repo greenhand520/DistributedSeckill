@@ -2,8 +2,7 @@ package cn.mdmbct.seckill.core.context;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.Award;
-import cn.mdmbct.seckill.core.award.red.GrabCompleteRedPacket;
-import cn.mdmbct.seckill.core.award.red.GrabDividedRedPacket;
+import cn.mdmbct.seckill.core.award.GrabCompleteRedPacket;
 import cn.mdmbct.seckill.core.filter.Filter;
 import com.sun.istack.internal.NotNull;
 import lombok.Getter;
@@ -32,7 +31,7 @@ public class FilterContext<R> {
 
     /**
      * the result of thread compete. <br>
-     * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.AwardSeckill} or execute {@link GrabDividedRedPacket} <br>
+     * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.AwardSeckill} <br>
      * and while execute {@link GrabCompleteRedPacket}, it's {@link Double}, mean denomination participant get <br>
      *
      * @see Award#Award(String, AtomicInteger)

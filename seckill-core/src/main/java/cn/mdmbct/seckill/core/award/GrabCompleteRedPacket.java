@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.award.red;
+package cn.mdmbct.seckill.core.award;
 
 import lombok.Getter;
 import lombok.Setter;

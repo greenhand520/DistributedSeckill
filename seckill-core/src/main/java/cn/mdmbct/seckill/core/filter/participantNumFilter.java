@@ -8,7 +8,7 @@ import cn.mdmbct.seckill.core.Participant;
  * @modified mdmbct
  * @since 0.1
  */
-public class participantNumFilter extends Filter {
+public class participantNumFilter<R> extends Filter<R> {
 
     private final int participationNum;
 
@@ -23,12 +23,8 @@ public class participantNumFilter extends Filter {
     }
 
     @Override
-    public void doFilter(Participant participant, String productId) {
-        if (getCurParticipationNum() >= participationNum) {
-            getFilterContext().setFilterNotPassed(this);
-            return;
-        }
-        doNextFilter(participant, productId);
+    public boolean doFilter(Participant participant, String awardId) {
+        return getCurParticipationNum() <= participationNum;
     }
 
     private int getCurParticipationNum() {

@@ -2,7 +2,6 @@ package cn.mdmbct.seckill.core.filter.token;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.filter.Filter;
-import lombok.Setter;
 
 
 /**
@@ -13,7 +12,7 @@ import lombok.Setter;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class TokenLimitFilter extends Filter {
+public abstract class TokenLimitFilter<R> extends Filter<R> {
 
     /**
      * 令牌每秒产生速率
@@ -47,26 +46,18 @@ public abstract class TokenLimitFilter extends Filter {
      */
     public abstract boolean tryAcquireOne();
 
-    public void doFilter(Participant participant, String productId) {
+    public boolean doFilter(Participant participant, String awardId) {
 
         if (cache == null) {
-            // 缓存为空
-            if (tryAcquireOne()) {
-                doNextFilter(participant, productId);
-            } else {
-                getFilterContext().setFilterNotPassed(this);
-            }
+            // if not set cache, don't cache the participants who did not get the token
+           return tryAcquireOne();
         } else {
-            // 缓存不为空
-            // 在缓存里直接通过
+            // cache the participants who did not get the token
             if (cache.check(participant.getId())) {
-                doNextFilter(participant, productId);
-            } else if (tryAcquireOne()) {
-                doNextFilter(participant, productId);
+                // if participant was in cache, do next filter directly
+                return true;
             } else {
-                getFilterContext().setFilterNotPassed(this);
-                // 没拿到令牌 添加到缓存
-                cache.add(participant.getId());
+                return tryAcquireOne();
             }
         }
     }

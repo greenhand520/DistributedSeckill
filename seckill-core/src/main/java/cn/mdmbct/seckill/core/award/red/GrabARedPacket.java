@@ -1,6 +1,7 @@
 package cn.mdmbct.seckill.core.award.red;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -8,7 +9,7 @@ import java.util.Random;
 
 /**
  * Grab a red packet which just define total money ant split count <br>
- * this class will auto split the red packet by {@link GrabARedPacket#doubleMean(double)} and {@link GrabARedPacket#lineSegmentCutting()} <br>
+ * this class will auto split the red packet by {@link GrabARedPacket#doubleMean()} and {@link GrabARedPacket#lineSegmentCutting()} <br>
  * just run in single node server
  *
  * @author mdmbct  mdmbct@outlook.com
@@ -18,6 +19,11 @@ import java.util.Random;
  */
 @Getter
 public class GrabARedPacket {
+
+    public enum SplitMethod {
+        DOUBLE_MEAN,
+        LINE_SEGMENT_CUTTING
+    }
 
     /**
      * unit: Yuan
@@ -34,6 +40,12 @@ public class GrabARedPacket {
     private double remainMoney;
 
     private final Random random = new Random();
+
+    /**
+     * min denomination participant take, default value is 0.01 Yuan.
+     */
+    @Setter
+    private double minMoney = 0.01;
 
     public GrabARedPacket(double totalMoney, int count) {
         this.totalMoney = totalMoney;
@@ -56,10 +68,9 @@ public class GrabARedPacket {
     /**
      * double mean method, is a fair and square method to split red packet <br>
      * only a thread can execute this method
-     * @param minMoney The min denomination of the red packet split
      * @return The money of red packet grabbed with 2 significant digits , unit：Yuan
      */
-    synchronized public double doubleMean(double minMoney) {
+    synchronized public double doubleMean() {
         if (remainCount > 1) {
             double money = formatMoney(nextDouble(minMoney, 2 * (remainMoney / remainCount)));
             remainMoney -= money;
@@ -86,8 +97,20 @@ public class GrabARedPacket {
         } else  {
             return formatMoney(remainMoney);
         }
-
     }
+
+    synchronized public double grab(SplitMethod splitMethod) {
+        switch (splitMethod) {
+            case DOUBLE_MEAN:
+                return doubleMean();
+            case LINE_SEGMENT_CUTTING:
+                return lineSegmentCutting();
+            default:
+                return doubleMean();
+        }
+    }
+
+
 
 
 }

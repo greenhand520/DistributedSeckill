@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @modified mdmbct
  * @since 0.1
  */
-public class StockStateFilter extends Filter {
+public class StockStateFilter<R> extends Filter<R> {
 
     private boolean haveStock = true;
 
@@ -31,17 +31,16 @@ public class StockStateFilter extends Filter {
     }
 
     @Override
-    public void doFilter(Participant participant, String productId) {
+    public boolean doFilter(Participant participant, String awardId) {
         try {
             stateLock.readLock().lock();
             if (!haveStock) {
-                getFilterContext().setFilterNotPassed(this);
-                return;
+                return false;
             }
-            doNextFilter(participant, productId);
         } finally {
             stateLock.readLock().unlock();
         }
+        return true;
     }
 
     public void updateStockState(boolean haveStock) {

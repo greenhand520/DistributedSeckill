@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public class RedissonTokenLimitFilter extends TokenLimitFilter {
+public class RedissonTokenLimitFilter<R> extends TokenLimitFilter<R> {
 
     private final RRateLimiter rateLimiter;
 

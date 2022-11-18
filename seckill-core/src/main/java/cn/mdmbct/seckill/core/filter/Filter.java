@@ -4,20 +4,24 @@ import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.context.FilterContext;
 
 /**
+ * the abstract filter class to filter the lots of compete participant thread. <br>
+ * every filter must set its order to tell the {@link FilterChain} what the order it is <br>
+ * and filter chain will sort filters to determine filters call order. <br>
+ * the smaller the 'order' value, the earlier it is called. <br>
+ * default, the first filter's 'order' value is 0, the last filter's 'order' value is {@link Integer.MAX_VALUE}
+ *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/21 17:26
  * @modified mdmbct
  * @since 0.1
  */
-public abstract class Filter implements Comparable<Filter> {
-
-
+public abstract class Filter<R> implements Comparable<Filter<R>> {
     public static final int FIRST_FILTER_ORDER = 0;
     public static final int LAST_FILTER_ORDER = Integer.MAX_VALUE;
 
-    protected ThreadLocal<FilterContext> contextThreadLocal;
+    protected ThreadLocal<FilterContext<R>> contextThreadLocal;
 
-    protected Filter nextFilter;
+    protected Filter<R> nextFilter;
 
     protected final int order;
 
@@ -29,75 +33,103 @@ public abstract class Filter implements Comparable<Filter> {
         this.order = order;
     }
 
-    protected void setContextThreadLocal(ThreadLocal<FilterContext> contextThreadLocal) {
+    protected void setContextThreadLocal(ThreadLocal<FilterContext<R>> contextThreadLocal) {
         this.contextThreadLocal = contextThreadLocal;
     }
 
     /**
-     * 将context存储到ThreadLocal中 每个过滤器都有同一个ThreadLocal对象来存储context
+     * story context to every thread's threadLocal object.
      *
-     * @param context
+     * @param context {@link FilterContext}
      */
-    protected void setFilterContext(FilterContext context) {
-        // 线程只要在remove之前去get，都能拿到之前set的值
+    protected void setFilterContext(FilterContext<R> context) {
+        // thread can get the value before remove
 //        contextThreadLocal.remove();
         contextThreadLocal.set(context);
     }
 
-    public FilterContext getFilterContext() {
+    public FilterContext<R> getFilterContext() {
         return contextThreadLocal.get();
     }
 
     /**
-     * 获取调用顺序
+     * get the call order
      *
-     * @return 调用顺序
+     * @return call order
      */
     public int getOrder() {
         return this.order;
     }
 
     /**
-     * 设置下一个过滤器 getOrder()获取的到值越小 过滤器越靠前
+     * set the next filter
      *
-     * @param filter 下一个过滤器
+     * @param filter the next filter
      */
-    protected void nextFilter(Filter filter) {
+    protected void nextFilter(Filter<R> filter) {
         this.nextFilter = filter;
     }
 
     /**
-     * 设置下一个过滤器
+     * the filer calling chain.
+     * if {@link Filter#doFilter(Participant, String)} return value is true, will execute the next filter and add self to "FilterPassed" in the context, <br>
+     * otherwise add self to "FilterNotPassed"
      *
-     * @param participant
-     * @param awardId
+     * @param participant participant
+     * @param awardId award id
      */
-    protected void doNextFilter(Participant participant, String awardId) {
-        getFilterContext().addFilterPassed(this);
-        if (nextFilter != null) {
-            nextFilter.doFilter(participant, awardId);
+    public void filter(Participant participant, String awardId) {
+        boolean doNextFilter = doFilter(participant, awardId);
+        if (doNextFilter) {
+            if (nextFilter != null) {
+                nextFilter.filter(participant, awardId);
+            }
+        } else {
+            getFilterContext().setFilterNotPassed(this);
         }
     }
 
     /**
-     * 清理工作 如果需要做清理工作必须重写此方法
+     * do next filter <br>
+     * if "doNextFilter" is true, will execute the next filter and add self to "FilterPassed" in the context, <br>
+     * otherwise add self to "FilterNotPassed"
+     *
+     * @param participant  participant
+     * @param awardId      award id
+     * @param doNextFilter whether to do the next filter.
+     */
+    protected void doNextFilter(Participant participant, String awardId, boolean doNextFilter) {
+        if (doNextFilter) {
+            getFilterContext().addFilterPassed(this);
+            if (nextFilter != null) {
+                nextFilter.doFilter(participant, awardId);
+            }
+        } else {
+            getFilterContext().setFilterNotPassed(this);
+        }
+    }
+
+    /**
+     * clear memory <br>
+     * if you must clear memory for your filter, you must overwrite this method and super it.
      */
     protected void clear() {
         contextThreadLocal.remove();
     }
 
     /**
-     * 过滤逻辑
+     * The concrete filter logic impl
      *
-     * @param participant
-     * @param productId
+     * @param participant participant
+     * @param awardId award id
+     * @return whether to do next filer
      */
-    public abstract void doFilter(Participant participant, String productId);
+    public abstract boolean doFilter(Participant participant, String awardId);
 
     public abstract String notPassMsg();
 
     @Override
-    public int compareTo(Filter filter) {
+    public int compareTo(Filter<R> filter) {
         return this.getOrder() - filter.getOrder();
     }
 }

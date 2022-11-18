@@ -36,8 +36,8 @@ public class DefinedRedPacketExecutor {
      *
      * @return if the participant take an award luckily, this method will return it, otherwise return null.
      */
-    public DefinedRedPacket grab(Participant participant) {
-        filterChain.doFilter(participant, null);
+    public DefinedRedPacket compete(Participant participant) {
+        filterChain.filter(participant, null);
         // get the competed result form the context
 
 

@@ -15,7 +15,7 @@ import cn.mdmbct.seckill.core.context.FilterContext;
  * @modified mdmbct
  * @since 0.1
  */
-public class AwardFilter extends Filter {
+public class AwardFilter<R> extends Filter<R> {
 
     private final AwardRepository productsRepository;
 
@@ -30,12 +30,12 @@ public class AwardFilter extends Filter {
     }
 
     @Override
-    public void doFilter(Participant participant, String productId) {
+    public boolean doFilter(Participant participant, String awardId) {
         // 修改库存 并释放锁
 
         FilterContext filterContext = getFilterContext();
-        AwardRepository.UpdateRes updateRes = productsRepository.decrOne(productId);
-        filterContext.getCompetedLock().unLock(productId);
-
+        AwardRepository.UpdateRes updateRes = productsRepository.decrOne(awardId);
+//        filterContext.getCompetedLock().unLock(productId);
+        return true;
     }
 }

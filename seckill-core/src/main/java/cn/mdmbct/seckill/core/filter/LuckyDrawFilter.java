@@ -12,7 +12,7 @@ import cn.mdmbct.seckill.core.award.Drawer;
  * @modified mdmbct
  * @since 0.1
  */
-public class LuckyDrawFilter extends Filter {
+public class LuckyDrawFilter<R> extends Filter<R> {
 
     private final Drawer drawer;
     private final int probabilitiesSize;
@@ -30,11 +30,8 @@ public class LuckyDrawFilter extends Filter {
     }
 
     @Override
-    public void doFilter(Participant participant, String productId) {
+    public boolean doFilter(Participant participant, String awardId) {
 
-        int probability = drawer.next();
-
-
-        doNextFilter(participant, productId);
+        return true;
     }
 }

@@ -12,7 +12,7 @@ import cn.mdmbct.seckill.core.lock.AwardLock;
  * @modified mdmbct
  * @since 0.1
  */
-public class CompeteLockFilter extends Filter {
+public class CompeteLockFilter<R> extends Filter<R> {
 
     private final AwardLock lock;
 
@@ -27,14 +27,7 @@ public class CompeteLockFilter extends Filter {
     }
 
     @Override
-    public void doFilter(Participant participant, String productId) {
-        // 创建锁并尝试获取锁
-        final boolean b = lock.tryLock(productId);
-        if (b) {
-            getFilterContext().setCompetedLock(lock);
-            doNextFilter(participant, productId);
-        } else {
-            getFilterContext().setFilterNotPassed(this);
-        }
+    public boolean doFilter(Participant participant, String awardId) {
+        return lock.tryLock(awardId);
     }
 }

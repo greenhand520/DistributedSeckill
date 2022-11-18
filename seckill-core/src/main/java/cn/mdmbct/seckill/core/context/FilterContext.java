@@ -1,56 +1,49 @@
 package cn.mdmbct.seckill.core.context;
 
 import cn.mdmbct.seckill.core.Participant;
+import cn.mdmbct.seckill.core.award.Award;
 import cn.mdmbct.seckill.core.filter.Filter;
-import cn.mdmbct.seckill.core.lock.*;
+import com.sun.istack.internal.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import reactor.util.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 过滤器数据上下文 贯穿线程经过的过滤器链
- *
- * @author mdmbct  mdmbct@outlook.com
- * @date 2021/11/21 17:29
- * @modified mdmbct
- * @since 0.1
- */
-@ToString
-public class FilterContext {
 
-    /**
-     * 竞争到的锁 这个锁对象是唯一的 释放锁之后会置空
-     */
-    @Getter
-    private AwardLock competedLock;
+@Getter
+public class FilterContext<R> {
 
-    @Getter
     private final Thread thread;
 
-    @Getter
-    private final List<Filter> filtersPassed;
+    private final List<Filter<R>> filtersPassed;
 
     @Setter
-    @Getter
-    private Filter filterNotPassed;
+    private Filter<R> filterNotPassed;
 
-    @Getter
-    private final String awardId;
+    @Setter
+    private String awardId;
 
-    @Getter
     private final Participant participant;
 
-    public FilterContext(Thread thread, Participant participant, String awardId) {
+    /**
+     * the result of thread compete. <br>
+     * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.Seckill} or execute {@link cn.mdmbct.seckill.core.award.red.GrabDefinedRedPacket} <br>
+     * and while execute {@link cn.mdmbct.seckill.core.award.red.GrabARedPacket}, it's {@link Double}, mean denomination participant get
+     */
+    @Setter
+    private R competeRes;
+
+
+    public FilterContext(Thread thread, @NotNull Participant participant, @Nullable String awardId) {
         this.thread = thread;
         this.filtersPassed = new ArrayList<>();
         this.participant = participant;
         this.awardId = awardId;
     }
 
-    public void addFilterPassed(Filter filter) {
+    public void addFilterPassed(Filter<R> filter) {
         filtersPassed.add(filter);
     }
 
@@ -59,14 +52,7 @@ public class FilterContext {
         StringBuilder sb = new StringBuilder();
         sb.append("\n")
                 .append("ThreadId: ").append(thread.getId()).append("\n")
-                .append("ThreadName: ").append(thread.getName()).append("\n")
-                .append("FilterNotPassed: ");
-
-        if (filterNotPassed != null) {
-            sb.append(filterNotPassed.getClass()).append("\n");
-        } else {
-            sb.append("\n");
-        }
+                .append("ThreadName: ").append(thread.getName()).append("\n");
 
         sb.append("FiltersPassed: ");
         if (filtersPassed.size() != 0) {
@@ -81,16 +67,5 @@ public class FilterContext {
         return sb.toString();
     }
 
-    /**
-     * 将竞争到的锁保存到Context中，只在竞争到锁才调用
-     * @param lock
-     */
-    public void setCompetedLock(AwardLock lock) {
-        this.competedLock = lock;
-    }
 
-    public void unlock() {
-        competedLock.unLock(awardId);
-        this.competedLock = null;
-    }
 }

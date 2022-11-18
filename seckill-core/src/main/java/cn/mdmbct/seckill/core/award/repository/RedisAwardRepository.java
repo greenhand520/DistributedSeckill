@@ -1,5 +1,7 @@
-package cn.mdmbct.seckill.core.award;
+package cn.mdmbct.seckill.core.award.repository;
 
+import cn.mdmbct.seckill.core.award.Award;
+import cn.mdmbct.seckill.core.award.AwardSeckill;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 
@@ -8,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 对商品数量的修改直接在Redis中进行 适用于分布式下使用
+ * Modify the quantity of goods directly in Redis, suitable for multi node servers
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/18 19:56
@@ -25,13 +27,13 @@ public class RedisAwardRepository implements AwardRepository {
 
     public RedisAwardRepository(RedissonClient redissonClient, AwardSeckill seckill) {
         this.redissonClient = redissonClient;
-        keyCache = seckill.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> COUNT_CACHE_PREFIX + award.id));
+        keyCache = seckill.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> COUNT_CACHE_PREFIX + award.getId()));
 
         seckill.getAwards().forEach(award -> {
-            RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.id));
-            // 活动结束后5S过期
+            RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.getId()));
+            // Expires in 5 seconds after the event ends
             awardCount.expireIfGreater(Duration.ofMillis(seckill.getStartTime() + seckill.getTtl() * 1000 + 5000));
-            awardCount.set(award.remainCount.longValue());
+            awardCount.set(award.getRemainCount().longValue());
         });
 
 

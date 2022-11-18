@@ -2,6 +2,8 @@ package cn.mdmbct.seckill.core.context;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.Award;
+import cn.mdmbct.seckill.core.award.red.GrabCompleteRedPacket;
+import cn.mdmbct.seckill.core.award.red.GrabDividedRedPacket;
 import cn.mdmbct.seckill.core.filter.Filter;
 import com.sun.istack.internal.NotNull;
 import lombok.Getter;
@@ -10,6 +12,7 @@ import reactor.util.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Getter
@@ -29,11 +32,16 @@ public class FilterContext<R> {
 
     /**
      * the result of thread compete. <br>
-     * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.Seckill} or execute {@link cn.mdmbct.seckill.core.award.red.GrabDefinedRedPacket} <br>
-     * and while execute {@link cn.mdmbct.seckill.core.award.red.GrabARedPacket}, it's {@link Double}, mean denomination participant get
+     * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.AwardSeckill} or execute {@link GrabDividedRedPacket} <br>
+     * and while execute {@link GrabCompleteRedPacket}, it's {@link Double}, mean denomination participant get <br>
+     *
+     * @see Award#Award(String, AtomicInteger)
      */
     @Setter
     private R competeRes;
+
+    @Setter
+    private String notPassMsg;
 
 
     public FilterContext(Thread thread, @NotNull Participant participant, @Nullable String awardId) {
@@ -47,22 +55,37 @@ public class FilterContext<R> {
         filtersPassed.add(filter);
     }
 
-    public String getVisualInfo() {
+    @Override
+    public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("\n")
+        sb.append("--------------------\n")
                 .append("ThreadId: ").append(thread.getId()).append("\n")
-                .append("ThreadName: ").append(thread.getName()).append("\n");
+                .append("ThreadName: ").append(thread.getName()).append("\n")
+                .append("FilterNotPassed: ");
+
+        if (filterNotPassed != null) {
+            sb.append(filterNotPassed.getClass().getName()).append("\n");
+        } else {
+            sb.append("null\n");
+        }
 
         sb.append("FiltersPassed: ");
         if (filtersPassed.size() != 0) {
-            for (Filter filter : filtersPassed) {
-                sb.append(filter.getClass()).append(" ");
+            for (Filter<R> filter : filtersPassed) {
+                sb.append(filter.getClass().getName()).append("\t");
             }
 
         }
         sb.append("\n");
 
+        sb.append("awardId: ").append(awardId).append("\n")
+                .append("CompeteRes: ").append(competeRes).append("\n")
+                .append("Participant: ").append(participant).append("\n");
+
+        sb.append("NotPassMsg: ").append(notPassMsg).append("\n");
+
+        sb.append("--------------------\n");
 
         return sb.toString();
     }

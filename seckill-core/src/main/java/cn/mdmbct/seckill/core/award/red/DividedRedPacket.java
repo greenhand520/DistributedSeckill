@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * A red packet which has pre-defined denomination and count.
+ * A red packet which has divided(already pre-defined denomination and split count).
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/19 22:49
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Getter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class DefinedRedPacket extends Award implements Serializable {
+public class DividedRedPacket extends Award implements Serializable {
 
     private static final long serialVersionUID = 3931744600494223642L;
 
@@ -32,10 +32,10 @@ public class DefinedRedPacket extends Award implements Serializable {
      * @param money  denomination
      * @param count the count of red packet of this money
      */
-    public DefinedRedPacket(String id, double money, int count) {
+    public DividedRedPacket(String id, double money, int count) {
         super(id, count);
         if (money < 0) {
-            throw new IllegalArgumentException("The denomination of red packet must be more than zero.");
+            throw new IllegalArgumentException("The denomination of red packet must be > 0.");
         }
         this.money = money;
     }

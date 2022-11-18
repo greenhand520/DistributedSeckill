@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.award;
+package cn.mdmbct.seckill.core.award.repository;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

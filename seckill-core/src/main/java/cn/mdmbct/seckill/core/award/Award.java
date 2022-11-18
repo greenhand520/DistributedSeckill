@@ -1,5 +1,6 @@
 package cn.mdmbct.seckill.core.award;
 
+import cn.mdmbct.seckill.core.context.FilterContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +22,14 @@ public class Award implements Serializable {
 
     private static final long serialVersionUID = -93160346279104104L;
 
-    protected final String id;
+    private final String id;
 
     /**
      * 剩余数量
      */
-    protected final AtomicInteger remainCount;
+    private final AtomicInteger remainCount;
 
-    private final int totalCount;
+    private int totalCount = 0;
 
     @Setter
     protected double probability = 0;
@@ -37,6 +38,17 @@ public class Award implements Serializable {
         this.id = id;
         this.totalCount = totalCount;
         this.remainCount = new AtomicInteger(totalCount);
+    }
+
+    /**
+     * created for filter context
+     * @param id award id
+     * @param remainCount remain count
+     * @see FilterContext#getCompeteRes()
+     */
+    public Award(String id, AtomicInteger remainCount) {
+        this.id = id;
+        this.remainCount = remainCount;
     }
 
     /**

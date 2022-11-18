@@ -8,7 +8,7 @@ import lombok.ToString;
 import java.io.Serializable;
 
 /**
- * 参与用户
+ * The user who want to seckill the award.
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/19 23:24
@@ -25,11 +25,12 @@ public class Participant implements Serializable {
 
     private final String id;
 
-    /**
-     * 参与抽奖的用户名 空 另外设置
-     */
     private final String name;
 
+    /**
+     * username is ""
+     * @param id userid
+     */
     public Participant(String id) {
         this.id = id;
         this.name = "";

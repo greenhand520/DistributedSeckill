@@ -23,6 +23,12 @@ public abstract class Executor<R> {
         this.filterChain = new FilterChain<>(filters);
     }
 
+    /**
+     * if the participant take an award(red packet) luckily, this method will return it, otherwise return null.
+     * @param participant participant
+     * @param awardId awardId. when grab a red
+     * @return award or the denomination of red packet that the participant take
+     */
     public abstract R compete(Participant participant, String awardId);
 
 

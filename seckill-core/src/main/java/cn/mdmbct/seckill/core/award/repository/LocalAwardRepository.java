@@ -1,4 +1,7 @@
-package cn.mdmbct.seckill.core.award;
+package cn.mdmbct.seckill.core.award.repository;
+
+import cn.mdmbct.seckill.core.award.Award;
+import cn.mdmbct.seckill.core.award.AwardSeckill;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +22,7 @@ public class LocalAwardRepository implements AwardRepository {
 
     public LocalAwardRepository(AwardSeckill seckill) {
         this.cache = new HashMap<>(seckill.getAwards().size());
-        seckill.getAwards().forEach(award -> cache.put(award.id, award));
+        seckill.getAwards().forEach(award -> cache.put(award.getId(), award));
     }
 
     @Override

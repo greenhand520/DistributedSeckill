@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 使用{@link ReentrantLock} 适用于单机情况下
+ * use{@link ReentrantLock} to impl {@link AwardLock}, suitable for single node servers
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/19 10:21
@@ -19,8 +19,8 @@ public class LocalAwardLock implements AwardLock {
 
 
     /**
-     * 每个商品一个锁，提高并发度 key:商品id
-     * 这里使用公平锁（非公平锁：随机获取的过程，谁运气好，cpu时间片轮询到哪个线程，哪个线程就能获取锁） 17100454981
+     * Every award has its own lock to improve concurrency.key:award id
+     * A fair lock is used here (unfair lock: the process of random acquisition, who is lucky, which thread is polled by the cpu time slice, which thread can acquire the lock)
      */
     private final Map<String, ReentrantLock> idLocks;
 
@@ -31,7 +31,7 @@ public class LocalAwardLock implements AwardLock {
     private TimeUnit timeUnit = TimeUnit.SECONDS;
 
     /**
-     * 默认锁等待时间为3s
+     * The default lock waiting time is 3s
      */
     public LocalAwardLock() {
         this.idLocks = new ConcurrentHashMap<>();
@@ -59,7 +59,7 @@ public class LocalAwardLock implements AwardLock {
         final ReentrantLock lock = idLocks.get(id);
         if (lock != null && lock.isHeldByCurrentThread()) {
             lock.unlock();
-            // 加这个会导致总有几个倒霉线程获取不到锁
+            // Adding this will cause a few unlucky threads to fail to acquire the lock
 //            idLocks.remove(id);
         }
     }

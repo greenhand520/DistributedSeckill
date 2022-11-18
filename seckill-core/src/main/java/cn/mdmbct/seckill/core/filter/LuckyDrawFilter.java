@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.Drawer;
+import cn.mdmbct.seckill.core.award.drawer.Drawer;
 
 /**
  * Lucky draw filter, draw award for the thread that competed a lock. <br>

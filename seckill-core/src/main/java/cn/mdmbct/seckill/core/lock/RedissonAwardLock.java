@@ -6,7 +6,7 @@ import org.redisson.api.RedissonClient;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redisson实现的分布式锁 适用于多节点
+ * Distributed lock impl by redisson, suitable for multi node servers
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/18 19:30
@@ -26,9 +26,9 @@ public class RedissonAwardLock implements AwardLock {
     private final String lockCachePrefix;
 
     /**
-     * 默认锁等待时间为3s 过期时间为10s
-     * @param redissonClient  redisson客户端
-     * @param lockCachePrefix 锁前缀
+     * The default lock waiting time is 3s and the expiration time is 10s
+     * @param redissonClient  redisson client
+     * @param lockCachePrefix lock cache prefix
      */
     public RedissonAwardLock(RedissonClient redissonClient, String lockCachePrefix) {
         if (lockCachePrefix == null || lockCachePrefix.length() == 0) {
@@ -60,7 +60,7 @@ public class RedissonAwardLock implements AwardLock {
     }
 
     private boolean tryLock(String lockKey, int waitTime, int expireTime, TimeUnit timeUnit) {
-        // Java 中可重入锁的分布式实现
+        // Distributed Implementation of Reentrant Locks in Java
         final RLock lock = redissonClient.getLock(lockKey);
         try {
             return lock.tryLock(waitTime, expireTime, timeUnit);

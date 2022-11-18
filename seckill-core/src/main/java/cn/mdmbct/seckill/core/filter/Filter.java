@@ -8,7 +8,7 @@ import cn.mdmbct.seckill.core.context.FilterContext;
  * every filter must set its order to tell the {@link FilterChain} what the order it is <br>
  * and filter chain will sort filters to determine filters call order. <br>
  * the smaller the 'order' value, the earlier it is called. <br>
- * default, the first filter's 'order' value is 0, the last filter's 'order' value is {@link Integer.MAX_VALUE}
+ * default, the first filter's 'order' value is 0, the last filter's 'order' value is the max value of {@link Integer}
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/21 17:26
@@ -81,6 +81,7 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
     public void filter(Participant participant, String awardId) {
         boolean doNextFilter = doFilter(participant, awardId);
         if (doNextFilter) {
+            getFilterContext().addFilterPassed(this);
             if (nextFilter != null) {
                 nextFilter.filter(participant, awardId);
             }
@@ -105,7 +106,9 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
                 nextFilter.doFilter(participant, awardId);
             }
         } else {
-            getFilterContext().setFilterNotPassed(this);
+            final FilterContext<R> filterContext = getFilterContext();
+            filterContext.setFilterNotPassed(this);
+            filterContext.setNotPassMsg(notPassMsg());
         }
     }
 

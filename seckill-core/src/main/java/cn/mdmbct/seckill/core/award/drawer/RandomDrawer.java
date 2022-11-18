@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.award;
+package cn.mdmbct.seckill.core.award.drawer;
 
 import java.util.Collection;
 import java.util.Random;

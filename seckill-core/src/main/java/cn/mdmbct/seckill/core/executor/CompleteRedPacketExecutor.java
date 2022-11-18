@@ -1,8 +1,8 @@
 package cn.mdmbct.seckill.core.executor;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.red.GrabARedPacket;
-import cn.mdmbct.seckill.core.filter.ARedPacketStateFilter;
+import cn.mdmbct.seckill.core.award.red.GrabCompleteRedPacket;
+import cn.mdmbct.seckill.core.filter.CompleteRedPacketStateFilter;
 import cn.mdmbct.seckill.core.filter.Filter;
 
 import java.util.List;
@@ -15,22 +15,22 @@ import java.util.List;
  * @modified mdmbct
  * @since 1.0
  */
-public class ARedPacketExecutor<Double> extends Executor<Double> {
+public class CompleteRedPacketExecutor<R> extends Executor<Double> {
 
 
     /**
-     * has already add {@link ARedPacketStateFilter}
+     * has already add {@link CompleteRedPacketStateFilter}
      *
      * @param filters             filters to limit participant thread
      * @param totalMoney          total money
      * @param redPacketSplitCount split count
-     * @param splitMethod         {@link  GrabARedPacket.SplitMethod}
+     * @param splitMethod         {@link  GrabCompleteRedPacket.SplitMethod}
      */
-    public ARedPacketExecutor(List<Filter<Double>> filters, double totalMoney, int redPacketSplitCount,
-                              GrabARedPacket.SplitMethod splitMethod) {
+    public CompleteRedPacketExecutor(List<Filter<Double>> filters, double totalMoney, int redPacketSplitCount,
+                                     GrabCompleteRedPacket.SplitMethod splitMethod) {
         super(filters);
-        final GrabARedPacket grabARedPacket = new GrabARedPacket(totalMoney, redPacketSplitCount);
-        final ARedPacketStateFilter<Double> aRedPacketStateFilter = new ARedPacketStateFilter<>(grabARedPacket, splitMethod);
+        final GrabCompleteRedPacket grabARedPacket = new GrabCompleteRedPacket(totalMoney, redPacketSplitCount);
+        final CompleteRedPacketStateFilter aRedPacketStateFilter = new CompleteRedPacketStateFilter(grabARedPacket, splitMethod);
         filters.add(aRedPacketStateFilter);
     }
 

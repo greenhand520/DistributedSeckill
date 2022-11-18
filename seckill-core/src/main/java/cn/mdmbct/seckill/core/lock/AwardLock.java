@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.lock;
 
 /**
- * 商品、奖品锁接口
+ * prize lock interface
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/18 19:27
@@ -11,17 +11,17 @@ package cn.mdmbct.seckill.core.lock;
 public interface AwardLock {
 
     /**
-     * 尝试加锁
+     * try to lock
      *
-     * @param id 商品、奖品的id
-     * @return 是否加锁成功
+     * @param id award (divided red packet id) id
+     * @return whether the lock is successful
      */
     boolean tryLock(String id);
 
     /**
-     * 释放锁
+     * release lock
      *
-     * @param id 商品、奖品的id
+     * @param id award (divided red packet id) id
      */
     void unLock(String id);
 

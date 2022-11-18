@@ -8,8 +8,8 @@ import java.math.RoundingMode;
 import java.util.Random;
 
 /**
- * Grab a red packet which just define total money ant split count <br>
- * this class will auto split the red packet by {@link GrabARedPacket#doubleMean()} and {@link GrabARedPacket#lineSegmentCutting()} <br>
+ * Grab a complete red packet which just define total money and split count <br>
+ * this class will auto split the red packet by {@link GrabCompleteRedPacket#doubleMean()} and {@link GrabCompleteRedPacket#lineSegmentCutting()} <br>
  * just run in single node server
  *
  * @author mdmbct  mdmbct@outlook.com
@@ -18,7 +18,7 @@ import java.util.Random;
  * @since 1.0
  */
 @Getter
-public class GrabARedPacket {
+public class GrabCompleteRedPacket {
 
     public enum SplitMethod {
         DOUBLE_MEAN,
@@ -47,7 +47,7 @@ public class GrabARedPacket {
     @Setter
     private double minMoney = 0.01;
 
-    public GrabARedPacket(double totalMoney, int count) {
+    public GrabCompleteRedPacket(double totalMoney, int count) {
         this.totalMoney = totalMoney;
         this.count = count;
         this.remainCount = count;

@@ -21,19 +21,19 @@ public class RedisAwardRepository implements AwardRepository {
 
     private final RedissonClient redissonClient;
 
-    private static final String COUNT_CACHE_PREFIX = "AwardCount:AWARD_ID_";
-
     private final Map<String, String> keyCache;
 
     public RedisAwardRepository(RedissonClient redissonClient, AwardSeckill seckill) {
         this.redissonClient = redissonClient;
-        keyCache = seckill.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> COUNT_CACHE_PREFIX + award.getId()));
+        // DSK:${seckillId}:AwardCount:{awardId}
+        String countCachePrefix = "DSK:" + seckill.getId() + ":AwardCount:";
+        keyCache = seckill.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> countCachePrefix + award.getId()));
 
         seckill.getAwards().forEach(award -> {
             RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.getId()));
-            // Expires in 5 seconds after the event ends
-            awardCount.expireIfGreater(Duration.ofMillis(seckill.getStartTime() + seckill.getTtl() * 1000 + 5000));
             awardCount.set(award.getRemainCount().longValue());
+            // Expires in 5 seconds after the event ends
+            awardCount.expire(Duration.ofMillis(seckill.getTtl() * 1000 + 5000));
         });
 
 

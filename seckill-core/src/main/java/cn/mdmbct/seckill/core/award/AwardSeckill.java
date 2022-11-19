@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,12 +54,17 @@ public class AwardSeckill implements Serializable {
     }
 
     /**
-     * if all the award probability is > 0 and < 1, this method will use the value of 1 subtract the sum of
-     * all probabilities as the {@link Award.NoAward} probability. <br>
-     * otherwise, will re-cal all the award probability by the count of each award divided by the total count
+     * if all the award probability is > 0 and < 1, and the sum of all award probability is <= 1, this method will use the
+     * value of 1 subtract the sum of all probabilities as the {@link Award.NoAward} probability. <br>
+     * otherwise, will re-cal all the award probability by the count of each award divided by the total count <br>
+     * sort award from smallest to largest by its probability.
+     *
      * @param awards awards
      */
     public void setAwards(Collection<Award> awards) {
+
+        boolean isIllegal = false;
+
         if (awards.stream().allMatch(a -> a.probability > 0 && a.probability < 1)) {
             this.awards = new ArrayList<>(awards);
 
@@ -66,8 +72,14 @@ public class AwardSeckill implements Serializable {
             double p = 1 - sum;
             if (p > 0) {
                 awards.add(new Award.NoAward(p));
+            } else if (p < 0){
+                isIllegal = true;
             }
         } else {
+            isIllegal = true;
+        }
+
+        if (isIllegal) {
             ArrayList<Award> temp = new ArrayList<>(awards);
             int total = awards.stream().mapToInt(Award::getTotalCount).sum();
             temp.forEach(r -> {
@@ -75,8 +87,9 @@ public class AwardSeckill implements Serializable {
             });
             this.awards = temp;
         }
-
-
+        // sort from smallest to largest
+        Collections.sort(this.awards);
 
     }
+
 }

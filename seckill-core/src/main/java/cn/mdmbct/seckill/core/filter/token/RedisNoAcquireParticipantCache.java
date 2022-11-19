@@ -13,10 +13,9 @@ public class RedisNoAcquireParticipantCache implements NoAcquireParticipantCache
 
     private final RMap<Object, Object> cache;
 
-    private static final String CACHE_KEY = "RS_NO_TOKEN_PARTICIPANT";
-
-    public RedisNoAcquireParticipantCache(RedissonClient redissonClient) {
-        this.cache = redissonClient.getMap(CACHE_KEY);
+    public RedisNoAcquireParticipantCache(RedissonClient redissonClient, String seckillId) {
+        // DSK:${seckillId}:NoAcquireParticipant
+        this.cache = redissonClient.getMap("DSK:" + seckillId + ":NoAcquireParticipant");
     }
 
     @Override

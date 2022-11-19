@@ -2,6 +2,7 @@ package cn.mdmbct.seckill.core.award.repository;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * 商品、奖品管理的库 负责实际存储它们及数量的控制
@@ -39,6 +40,7 @@ public interface AwardRepository {
     UpdateRes updateCount(String id, int newCount);
 
     @Getter
+    @ToString
     @RequiredArgsConstructor
     class UpdateRes {
 

@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.executor;
+package cn.mdmbct.seckill.core.activity;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.CompleteRedPacket;
@@ -15,7 +15,7 @@ import java.util.List;
  * @modified mdmbct
  * @since 1.0
  */
-public class CompleteRedPacketExecutor extends Executor<Double> {
+public class CompleteRedPacketActivity extends Activity<Double> {
 
 
     /**
@@ -26,7 +26,7 @@ public class CompleteRedPacketExecutor extends Executor<Double> {
      * @param redPacketSplitCount split count
      * @param splitMethod         {@link  CompleteRedPacket.SplitMethod}
      */
-    public CompleteRedPacketExecutor(List<Filter<Double>> filters, double totalMoney, int redPacketSplitCount,
+    public CompleteRedPacketActivity(List<Filter<Double>> filters, double totalMoney, int redPacketSplitCount,
                                      CompleteRedPacket.SplitMethod splitMethod) {
         super(filters);
         final CompleteRedPacket redPacket = new CompleteRedPacket(totalMoney, redPacketSplitCount);

@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.executor;
+package cn.mdmbct.seckill.core.activity;
 
 /**
  * 秒杀、抽奖、抢红包活动管理器
@@ -8,5 +8,5 @@ package cn.mdmbct.seckill.core.executor;
  * @modified mdmbct
  * @since 0.1
  */
-public class ExecutorManager {
+public class ActivityManager {
 }

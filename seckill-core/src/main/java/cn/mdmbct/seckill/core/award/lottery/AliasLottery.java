@@ -1,25 +1,26 @@
-package cn.mdmbct.seckill.core.award.drawer;
+package cn.mdmbct.seckill.core.award.lottery;
 
 import java.util.*;
 
 /**
- * PDF-Alias算法 <br>
- * 概念分布函数-别名 算法 <br>
+ * PDF-Alias algorithm <br>
+ * 概率分布-别名算法
  * <pre>
- *     T	    1	    2	    3	    4
- *    PDF   0.1	   0.2	   0.3	   0.4
- *    Alias  3	    4	    4	    NULL
+ * index          1         2	      3	        4
+ * probability   0.1	   0.2	     0.3       0.4
+ * alias          3         4	      4	       NULL
  * </pre>
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/16 上午8:52
  * @modified mdmbct
+ * @see <a href="https://www.keithschwarz.com/darts-dice-coins/">https://www.keithschwarz.com/darts-dice-coins/
  * @since 1.0
  */
-public class PDFAliasDrawer extends Drawer {
+public class AliasLottery implements Lottery {
 
     /**
-     * 各奖项的概率数组及其alias数组
+     * The probability array of each award and its alias array
      */
     private double[] probabilities;
 
@@ -27,24 +28,22 @@ public class PDFAliasDrawer extends Drawer {
 
     private final Random random;
 
-    public PDFAliasDrawer() {
+    public AliasLottery() {
         this.random = new Random();
     }
 
-    /**
-     * 初始化
-     */
-    private void init(List<Double> probabilities) {
+    @Override
+    public void setProbabilities(List<Double> probabilities) {
+        // init
 
-        // no check, has checked in method optimiseProbabilities
-
+        // no check, has checked in class AwardSeckill
         this.probabilities = new double[probabilities.size()];
         alias = new int[probabilities.size()];
 
-        // 平均概率
+        // average probability
         double average = 1.0 / probabilities.size();
 
-        // 复制概率列表，后面需要对其进行更改
+        // Copy the list of probabilities, need to change it later
         ArrayList<Double> newProbabilities = new ArrayList<>(probabilities);
 
         Deque<Integer> small = new ArrayDeque<>();
@@ -58,10 +57,10 @@ public class PDFAliasDrawer extends Drawer {
             }
         }
 
-        // 在用完large之前用完small
+        // use up small before running out of large
         while (!small.isEmpty() && !large.isEmpty()) {
 
-            // 获取小概率和大概率的索引
+            // get the index of small and large probabilities
             int less = small.removeLast();
             int more = large.removeLast();
 
@@ -83,11 +82,6 @@ public class PDFAliasDrawer extends Drawer {
         while (!large.isEmpty()) {
             this.probabilities[large.removeLast()] = 1.0;
         }
-    }
-
-    @Override
-    public void setProbabilities(Collection<Double> probabilities) {
-        init(optimizeProbabilities(probabilities));
     }
 
     @Override

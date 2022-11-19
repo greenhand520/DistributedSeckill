@@ -4,12 +4,13 @@ import cn.mdmbct.seckill.core.context.FilterContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 奖品
+ * Award
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2021/11/19 20:05
@@ -17,8 +18,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 0.1
  */
 @Getter
+@ToString
 @EqualsAndHashCode
-public class Award implements Serializable {
+public class Award implements Serializable, Comparable<Award> {
 
     private static final long serialVersionUID = -93160346279104104L;
 
@@ -71,6 +73,12 @@ public class Award implements Serializable {
 
     public void update(int newCount) {
         remainCount.getAndSet(newCount);
+    }
+
+    @Override
+    public int compareTo(Award o) {
+        // sort from smallest to largest
+        return Double.compare(probability, o.probability);
     }
 
     public static class NoAward extends Award {

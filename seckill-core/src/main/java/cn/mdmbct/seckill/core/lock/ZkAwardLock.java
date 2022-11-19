@@ -47,10 +47,9 @@ public class ZkAwardLock implements AwardLock {
     public static class ZkLockConfig implements Serializable {
 
         /**
-         * zk distributed lock node directory, such as："/curator/lock/seckill" <br>
-         * ⚠⚠⚠ Note that the node cannot have '/' at the end
+         * /DSK/lock/${seckillId}/${awardId}
          */
-        private final String lockPath;
+        private final String lockPathPrefix;
 
         private int baseSleepTimeMs = 1000;
 
@@ -62,15 +61,8 @@ public class ZkAwardLock implements AwardLock {
 
         private String address = "localhost:2181";
 
-        private static void checkLockPath(String lockPath) {
-            if (lockPath == null || lockPath.trim().length() <= 1 || lockPath.endsWith("/")) {
-                throw new IllegalArgumentException("The value of param 'lockPath' " + lockPath + " is illegal.");
-            }
-        }
-
-        public ZkLockConfig(String lockPath, int baseSleepTimeMs, int maxRetries, long lockWaitTime, TimeUnit lockWaitTimeTimeUnit, String address) {
-            checkLockPath(lockPath);
-            this.lockPath = lockPath;
+        public ZkLockConfig(String seckillId, int baseSleepTimeMs, int maxRetries, long lockWaitTime, TimeUnit lockWaitTimeTimeUnit, String address) {
+            this(seckillId);
             this.baseSleepTimeMs = baseSleepTimeMs;
             this.maxRetries = maxRetries;
             this.lockWaitTime = lockWaitTime;
@@ -84,12 +76,9 @@ public class ZkAwardLock implements AwardLock {
          * maxRetries = 3 <br>
          * lockWaitTime = 3s <br>
          * address = "localhost:2181"
-         *
-         * @param lockPath zk distributed lock node directory
          */
-        public ZkLockConfig(String lockPath) {
-            checkLockPath(lockPath);
-            this.lockPath = lockPath;
+        public ZkLockConfig(String seckillId) {
+            this.lockPathPrefix = "/DSK/lock/" + seckillId + "/";
         }
     }
 
@@ -100,11 +89,10 @@ public class ZkAwardLock implements AwardLock {
 
     /**
      * default <br>
-     *
-     * @param lockPath {@link ZkLockConfig}
      */
-    public ZkAwardLock(@NotNull String lockPath, @NotNull Set<String> awardIds) {
-        this.lockConfig = new ZkLockConfig(lockPath);
+    public ZkAwardLock(@NotNull String seckillId,
+                       @NotNull Set<String>awardIds) {
+        this.lockConfig = new ZkLockConfig(seckillId);
         this.mutexMap = new HashMap<>(awardIds.size());
         init(awardIds);
     }
@@ -124,7 +112,7 @@ public class ZkAwardLock implements AwardLock {
         client = CuratorFrameworkFactory.newClient(lockConfig.address, retryPolicy);
         client.start();
         // shared reentrant lock
-        awardIds.forEach(productId -> mutexMap.put(productId, new InterProcessMutex(client, lockConfig.lockPath + "/" + productId)));
+        awardIds.forEach(productId -> mutexMap.put(productId, new InterProcessMutex(client, lockConfig.lockPathPrefix + productId)));
     }
 
 

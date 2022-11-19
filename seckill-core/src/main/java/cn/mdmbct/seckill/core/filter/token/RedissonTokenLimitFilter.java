@@ -1,5 +1,6 @@
 package cn.mdmbct.seckill.core.filter.token;
 
+import cn.mdmbct.seckill.core.award.AwardSeckill;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
@@ -21,8 +22,8 @@ public class RedissonTokenLimitFilter<R> extends TokenLimitFilter<R> {
 
     public RedissonTokenLimitFilter(int order, int ratePerSec, long timeout,
                                     NoAcquireParticipantCache cache,
-                                    RedissonClient redissonClient, String key) {
-        super(order, ratePerSec, timeout, cache);
+                                    RedissonClient redissonClient, String key, AwardSeckill seckill) {
+        super(order, ratePerSec, timeout, cache, seckill);
         this.rateLimiter = redissonClient.getRateLimiter(key);
         rateLimiter.setRate(RateType.OVERALL, ratePerSec, 1, RateIntervalUnit.SECONDS);
     }

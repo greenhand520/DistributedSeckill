@@ -22,34 +22,35 @@ public class RedisAwardLock implements AwardLock {
 
         private static final long serialVersionUID = -3007846115247289444L;
 
+        /**
+         * DSK:${seckillId}:AwardLock:${awardId}
+         */
+        private final String lockCachePrefix;
+
         private int lockWaitTime = 3;
 
         private int lockExpireTime = 10;
 
         private TimeUnit timeUnit = TimeUnit.SECONDS;
 
-        private final String lockCachePrefix;
-
-        private static void checkPrefix(String prefix) {
-            if (prefix == null || prefix.trim().length() == 0) {
-                throw new IllegalArgumentException("Param 'lockCachePrefix' must be not null.");
-            }
-        }
-
-        public RedisAwardLockConfig(String lockCachePrefix) {
-            checkPrefix(lockCachePrefix);
-            this.lockCachePrefix = lockCachePrefix;
-        }
-
-        public RedisAwardLockConfig(int lockWaitTime, int lockExpireTime, TimeUnit timeUnit, String lockCachePrefix) {
-            checkPrefix(lockCachePrefix);
+        public RedisAwardLockConfig(String seckillId, int lockWaitTime, int lockExpireTime, TimeUnit timeUnit) {
+            this(seckillId);
             if (lockWaitTime <= 0 || lockExpireTime <= 0) {
                 throw new IllegalArgumentException("Param 'lockWaitTime' and 'lockExpireTime' must be > 0.");
             }
             this.lockWaitTime = lockWaitTime;
             this.lockExpireTime = lockExpireTime;
             this.timeUnit = timeUnit;
-            this.lockCachePrefix = lockCachePrefix;
+        }
+
+        /**
+         * default
+         * lockWaitTime = 3 <br>
+         * lockExpireTime = 10
+         */
+        public RedisAwardLockConfig(String seckillId) {
+            // DSK:${seckillId}:AwardLock:${awardId}
+            this.lockCachePrefix = "DSK:" + seckillId + ":AwardLock:";
         }
     }
 
@@ -60,11 +61,9 @@ public class RedisAwardLock implements AwardLock {
     /**
      * The default lock waiting time is 3s and the expiration time is 10s
      * @param redissonClient  redisson client
-     * @param lockCachePrefix lock cache prefix
      */
-    public RedisAwardLock(RedissonClient redissonClient, String lockCachePrefix) {
-        this.redissonClient = redissonClient;
-        this.lockConfig = new RedisAwardLockConfig(lockCachePrefix);
+    public RedisAwardLock(String secKillId, RedissonClient redissonClient) {
+        this(redissonClient, new RedisAwardLockConfig(secKillId));
     }
 
     public RedisAwardLock(RedissonClient redissonClient,

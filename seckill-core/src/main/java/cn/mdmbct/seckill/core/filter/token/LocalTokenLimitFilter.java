@@ -1,5 +1,6 @@
 package cn.mdmbct.seckill.core.filter.token;
 
+import cn.mdmbct.seckill.core.award.AwardSeckill;
 import com.google.common.util.concurrent.RateLimiter;
 
 
@@ -22,16 +23,17 @@ public class LocalTokenLimitFilter<R> extends TokenLimitFilter<R> {
     /**
      * 平滑突发限流
      *
-     * @param order
-     * @param tokenPerSec
-     * @param timeout
+     * @param order order
+     * @param tokenPerSec token per sec
+     * @param timeout timeout
      * @param cache       {@link LocalNoAcqParticipantCache}
-     * @see TokenLimitFilter#TokenLimitFilter(int, int, long, NoAcquireParticipantCache)
+     * @see TokenLimitFilter#TokenLimitFilter(int, int, long, NoAcquireParticipantCache, AwardSeckill)
      */
     public LocalTokenLimitFilter(int order, int tokenPerSec,
                                  long timeout,
-                                 NoAcquireParticipantCache cache) {
-        super(order, tokenPerSec, timeout, cache);
+                                 NoAcquireParticipantCache cache,
+                                 AwardSeckill seckill) {
+        super(order, tokenPerSec, timeout, cache, seckill);
         this.rateLimiter = RateLimiter.create(tokenPerSec);
     }
 
@@ -55,8 +57,9 @@ public class LocalTokenLimitFilter<R> extends TokenLimitFilter<R> {
                                  int warmupTime,
                                  TimeUnit unit,
                                  long timeout,
-                                 NoAcquireParticipantCache cache) {
-        super(order, tokenPerSec, timeout, cache);
+                                 NoAcquireParticipantCache cache,
+                                 AwardSeckill seckill) {
+        super(order, tokenPerSec, timeout, cache, seckill);
         this.rateLimiter = RateLimiter.create(tokenPerSec, warmupTime, unit);
     }
 

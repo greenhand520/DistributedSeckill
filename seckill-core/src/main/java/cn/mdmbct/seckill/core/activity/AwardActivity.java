@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.executor;
+package cn.mdmbct.seckill.core.activity;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.Award;
@@ -23,48 +23,48 @@ import java.util.stream.Collectors;
  * @modified mdmbct
  * @since 0.1
  */
-public class AwardExecutor extends Executor<Award> {
-    public AwardExecutor(List<Filter<Award>> filters, AwardRepository awardRepository, AwardLock awardLock) {
+public class AwardActivity extends Activity<Award> {
+    public AwardActivity(List<Filter<Award>> filters, AwardRepository awardRepository, AwardLock awardLock) {
         super(filters);
         filters.add(new AwardQuantityFilter(awardRepository, awardLock));
     }
 
     //// some default constructors ////
 
-    public static AwardExecutor withLocal(List<Filter<Award>> filters, AwardSeckill seckill) {
-        return new AwardExecutor(filters, new LocalAwardRepository(seckill), new LocalAwardLock());
+    public static AwardActivity withLocal(List<Filter<Award>> filters, AwardSeckill seckill) {
+        return new AwardActivity(filters, new LocalAwardRepository(seckill), new LocalAwardLock());
     }
 
-    public static AwardExecutor withRedis(List<Filter<Award>> filters,
+    public static AwardActivity withRedis(List<Filter<Award>> filters,
                                           AwardSeckill seckill,
                                           RedissonClient redissonClient) {
-        return new AwardExecutor(filters,
+        return new AwardActivity(filters,
                 new RedisAwardRepository(redissonClient, seckill),
-                new RedisAwardLock(redissonClient, "REDIS_AWARD_LOCK_"));
+                new RedisAwardLock(seckill.getId(), redissonClient));
     }
 
-    public static AwardExecutor withRedis(List<Filter<Award>> filters,
+    public static AwardActivity withRedis(List<Filter<Award>> filters,
                                           AwardSeckill seckill,
                                           RedissonClient redissonClient,
                                           RedisAwardLock.RedisAwardLockConfig lockConfig) {
-        return new AwardExecutor(filters,
+        return new AwardActivity(filters,
                 new RedisAwardRepository(redissonClient, seckill),
                 new RedisAwardLock(redissonClient, lockConfig));
     }
 
-    public static AwardExecutor withZooKeeper(List<Filter<Award>> filters,
+    public static AwardActivity withZooKeeper(List<Filter<Award>> filters,
                                               AwardSeckill seckill,
                                               RedissonClient redissonClient) {
-        return new AwardExecutor(filters,
+        return new AwardActivity(filters,
                 new RedisAwardRepository(redissonClient, seckill),
-                new ZkAwardLock("/curator/lock/seckill/" + seckill.getId(), seckill.getAwards().stream().map(Award::getId).collect(Collectors.toSet())));
+                new ZkAwardLock(seckill.getId(), seckill.getAwards().stream().map(Award::getId).collect(Collectors.toSet())));
     }
 
-    public static AwardExecutor withZooKeeper(List<Filter<Award>> filters,
+    public static AwardActivity withZooKeeper(List<Filter<Award>> filters,
                                               AwardSeckill seckill,
                                               RedissonClient redissonClient,
                                               ZkAwardLock.ZkLockConfig lockConfig) {
-        return new AwardExecutor(filters,
+        return new AwardActivity(filters,
                 new RedisAwardRepository(redissonClient, seckill),
                 new ZkAwardLock(lockConfig, seckill.getAwards().stream().map(Award::getId).collect(Collectors.toSet())));
     }
@@ -74,11 +74,13 @@ public class AwardExecutor extends Executor<Award> {
 
     @Override
     public Award compete(Participant participant, String awardId) {
-        return null;
+        filterChain.filter(participant, awardId);
+        return filterChain.getFilterContext().getCompeteRes();
     }
 
     @Override
     public void clear() {
         filterChain.clear();
+        // todo: delete redis cache by key prefix
     }
 }

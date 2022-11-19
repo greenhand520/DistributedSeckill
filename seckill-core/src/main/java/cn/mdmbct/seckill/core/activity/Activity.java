@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.executor;
+package cn.mdmbct.seckill.core.activity;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.filter.Filter;
@@ -15,11 +15,11 @@ import java.util.List;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class Executor<R> {
+public abstract class Activity<R> {
 
     protected final FilterChain<R> filterChain;
 
-    public Executor(List<Filter<R>> filters) {
+    public Activity(List<Filter<R>> filters) {
         this.filterChain = new FilterChain<>(filters);
     }
 

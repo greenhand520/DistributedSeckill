@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  * Grab a complete red packet which just define total money and split count <br>
- * this class will auto split the red packet by {@link GrabCompleteRedPacket#doubleMean()} and {@link GrabCompleteRedPacket#lineSegmentCutting()} <br>
+ * this class will auto split the red packet by {@link CompleteRedPacket#doubleMean()} and {@link CompleteRedPacket#lineSegmentCutting()} <br>
  * just run in single node server
  *
  * @author mdmbct  mdmbct@outlook.com
@@ -18,7 +18,7 @@ import java.util.Random;
  * @since 1.0
  */
 @Getter
-public class GrabCompleteRedPacket {
+public class CompleteRedPacket {
 
     public enum SplitMethod {
         DOUBLE_MEAN,
@@ -47,7 +47,7 @@ public class GrabCompleteRedPacket {
     @Setter
     private double minMoney = 0.01;
 
-    public GrabCompleteRedPacket(double totalMoney, int count) {
+    public CompleteRedPacket(double totalMoney, int count) {
         this.totalMoney = totalMoney;
         this.count = count;
         this.remainCount = count;

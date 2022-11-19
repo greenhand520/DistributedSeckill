@@ -31,5 +31,10 @@ public abstract class Executor<R> {
      */
     public abstract R compete(Participant participant, String awardId);
 
+    /**
+     * clear memory
+     */
+    public abstract void clear();
+
 
 }

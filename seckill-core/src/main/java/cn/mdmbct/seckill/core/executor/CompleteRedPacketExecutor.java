@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.executor;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.GrabCompleteRedPacket;
+import cn.mdmbct.seckill.core.award.CompleteRedPacket;
 import cn.mdmbct.seckill.core.filter.CompleteRedPacketStateFilter;
 import cn.mdmbct.seckill.core.filter.Filter;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @modified mdmbct
  * @since 1.0
  */
-public class CompleteRedPacketExecutor<R> extends Executor<Double> {
+public class CompleteRedPacketExecutor extends Executor<Double> {
 
 
     /**
@@ -24,14 +24,14 @@ public class CompleteRedPacketExecutor<R> extends Executor<Double> {
      * @param filters             filters to limit participant thread
      * @param totalMoney          total money
      * @param redPacketSplitCount split count
-     * @param splitMethod         {@link  GrabCompleteRedPacket.SplitMethod}
+     * @param splitMethod         {@link  CompleteRedPacket.SplitMethod}
      */
     public CompleteRedPacketExecutor(List<Filter<Double>> filters, double totalMoney, int redPacketSplitCount,
-                                     GrabCompleteRedPacket.SplitMethod splitMethod) {
+                                     CompleteRedPacket.SplitMethod splitMethod) {
         super(filters);
-        final GrabCompleteRedPacket grabARedPacket = new GrabCompleteRedPacket(totalMoney, redPacketSplitCount);
-        final CompleteRedPacketStateFilter aRedPacketStateFilter = new CompleteRedPacketStateFilter(grabARedPacket, splitMethod);
-        filters.add(aRedPacketStateFilter);
+        final CompleteRedPacket redPacket = new CompleteRedPacket(totalMoney, redPacketSplitCount);
+        final CompleteRedPacketStateFilter redPacketStateFilter = new CompleteRedPacketStateFilter(redPacket, splitMethod);
+        filters.add(redPacketStateFilter);
     }
 
     /**
@@ -48,5 +48,8 @@ public class CompleteRedPacketExecutor<R> extends Executor<Double> {
         // todo: may todo something else.
     }
 
-
+    @Override
+    public void clear() {
+        filterChain.clear();
+    }
 }

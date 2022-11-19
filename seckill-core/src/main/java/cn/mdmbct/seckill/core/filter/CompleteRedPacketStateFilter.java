@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.GrabCompleteRedPacket;
+import cn.mdmbct.seckill.core.award.CompleteRedPacket;
 
 /**
  * As the class name mean, is the last filter while you execute grab a complete red packet activity <br>
@@ -15,11 +15,11 @@ import cn.mdmbct.seckill.core.award.GrabCompleteRedPacket;
  */
 public class CompleteRedPacketStateFilter extends Filter<Double> {
 
-    private final GrabCompleteRedPacket grabARedPacket;
+    private final CompleteRedPacket grabARedPacket;
 
-    private final GrabCompleteRedPacket.SplitMethod splitMethod;
+    private final CompleteRedPacket.SplitMethod splitMethod;
 
-    public CompleteRedPacketStateFilter(GrabCompleteRedPacket grabARedPacket, GrabCompleteRedPacket.SplitMethod splitMethod) {
+    public CompleteRedPacketStateFilter(CompleteRedPacket grabARedPacket, CompleteRedPacket.SplitMethod splitMethod) {
         super(LAST_FILTER_ORDER);
         this.grabARedPacket = grabARedPacket;
         this.splitMethod = splitMethod;

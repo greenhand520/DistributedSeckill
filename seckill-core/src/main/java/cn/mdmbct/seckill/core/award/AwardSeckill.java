@@ -53,12 +53,13 @@ public class AwardSeckill implements Serializable {
     }
 
     /**
-     * if all the award probability is > 0, this method will use the value of 1 subtract the sum of all probabilities as the {@link Award.NoAward} probability. <br>
+     * if all the award probability is > 0 and < 1, this method will use the value of 1 subtract the sum of
+     * all probabilities as the {@link Award.NoAward} probability. <br>
      * otherwise, will re-cal all the award probability by the count of each award divided by the total count
      * @param awards awards
      */
     public void setAwards(Collection<Award> awards) {
-        if (awards.stream().allMatch(a -> a.getProbability() > 0)) {
+        if (awards.stream().allMatch(a -> a.probability > 0 && a.probability < 1)) {
             this.awards = new ArrayList<>(awards);
 
             double sum = awards.stream().mapToDouble(Award::getProbability).sum();

@@ -2,18 +2,8 @@ package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.Award;
-import cn.mdmbct.seckill.core.award.AwardSeckill;
 import cn.mdmbct.seckill.core.award.repository.AwardRepository;
-import cn.mdmbct.seckill.core.award.repository.LocalAwardRepository;
-import cn.mdmbct.seckill.core.award.repository.RedisAwardRepository;
 import cn.mdmbct.seckill.core.lock.AwardLock;
-import cn.mdmbct.seckill.core.lock.LocalAwardLock;
-import cn.mdmbct.seckill.core.lock.RedissonAwardLock;
-import cn.mdmbct.seckill.core.lock.ZkAwardLock;
-import org.redisson.api.RedissonClient;
-
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * The award (or divided red packet) remain count filter is the last filter.<br>
@@ -59,63 +49,4 @@ public class AwardQuantityFilter extends Filter<Award> {
         return false;
     }
 
-
-    public static class LocalAwardQuantityFilter extends AwardQuantityFilter {
-
-        public LocalAwardQuantityFilter(AwardSeckill seckill) {
-            super(new LocalAwardRepository(seckill), new LocalAwardLock());
-        }
-    }
-
-    public static class RedisAwardQuantityFilter extends AwardQuantityFilter {
-
-        public RedisAwardQuantityFilter(AwardSeckill seckill, RedissonClient redissonClient) {
-            super(new RedisAwardRepository(redissonClient, seckill),
-                    new RedissonAwardLock(redissonClient, "REDIS_AWARD_LOCK_" + seckill.getId()));
-        }
-
-        public RedisAwardQuantityFilter(AwardSeckill seckill,
-                                                   RedissonClient redissonClient,
-                                                   int lockWaitTime,
-                                                   int lockExpireTime,
-                                                   TimeUnit timeUnit) {
-            super(new RedisAwardRepository(redissonClient, seckill),
-                    new RedissonAwardLock(redissonClient,
-                            lockWaitTime,
-                            lockExpireTime,
-                            timeUnit,
-                            "REDIS_AWARD_LOCK_" + seckill.getId()));
-        }
-    }
-
-    public static class ZKAwardQuantityFilter extends AwardQuantityFilter {
-
-
-        public ZKAwardQuantityFilter(AwardSeckill seckill, RedissonClient redissonClient) {
-            super(new RedisAwardRepository(redissonClient, seckill),
-                    new ZkAwardLock("/curator/lock/seckill/" + seckill.getId(),
-                            seckill.getAwards().stream().map(Award::getId).collect(Collectors.toSet())
-                    )
-            );
-        }
-
-        public ZKAwardQuantityFilter(AwardSeckill seckill,
-                                                RedissonClient redissonClient,
-                                                int baseSleepTimeMs,
-                                                int maxRetries,
-                                                String address,
-                                                long lockWaitTime,
-                                                TimeUnit lockWaitTimeTimeUnit) {
-            super(new RedisAwardRepository(redissonClient, seckill),
-                    new ZkAwardLock("/curator/lock/seckill/" + seckill.getId(),
-                            baseSleepTimeMs,
-                            maxRetries,
-                            address,
-                            lockWaitTime,
-                            lockWaitTimeTimeUnit,
-                            seckill.getAwards().stream().map(Award::getId).collect(Collectors.toSet())
-                    )
-            );
-        }
-    }
 }

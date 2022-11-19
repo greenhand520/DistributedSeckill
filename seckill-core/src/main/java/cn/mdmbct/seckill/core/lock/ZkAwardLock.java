@@ -1,12 +1,14 @@
 package cn.mdmbct.seckill.core.lock;
 
 import com.sun.istack.internal.NotNull;
+import lombok.Getter;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * ZooKeeper distributed lock is suitable for multi-node servers <br>
  * Advantages: ZooKeeper distributed lock (Inter Process Mutex is used here), which can effectively solve distributed problems,
  * non-reentrant problems, and is relatively simple to use.
- *  <br>
+ * <br>
  * Disadvantages: The performance of the distributed lock implemented by ZooKeeper is not too high.
  * Every time in the process of creating and releasing the lock, the instantaneous node must be dynamically created
  * and destroyed to realize the lock function.
@@ -41,64 +43,88 @@ import java.util.concurrent.TimeUnit;
  */
 public class ZkAwardLock implements AwardLock {
 
-    private final String lockPath;
+    @Getter
+    public static class ZkLockConfig implements Serializable {
+
+        /**
+         * zk distributed lock node directory, such as："/curator/lock/seckill" <br>
+         * ⚠⚠⚠ Note that the node cannot have '/' at the end
+         */
+        private final String lockPath;
+
+        private int baseSleepTimeMs = 1000;
+
+        private int maxRetries = 3;
+
+        private long lockWaitTime = 3;
+
+        private TimeUnit lockWaitTimeTimeUnit = TimeUnit.SECONDS;
+
+        private String address = "localhost:2181";
+
+        private static void checkLockPath(String lockPath) {
+            if (lockPath == null || lockPath.trim().length() <= 1 || lockPath.endsWith("/")) {
+                throw new IllegalArgumentException("The value of param 'lockPath' " + lockPath + " is illegal.");
+            }
+        }
+
+        public ZkLockConfig(String lockPath, int baseSleepTimeMs, int maxRetries, long lockWaitTime, TimeUnit lockWaitTimeTimeUnit, String address) {
+            checkLockPath(lockPath);
+            this.lockPath = lockPath;
+            this.baseSleepTimeMs = baseSleepTimeMs;
+            this.maxRetries = maxRetries;
+            this.lockWaitTime = lockWaitTime;
+            this.lockWaitTimeTimeUnit = lockWaitTimeTimeUnit;
+            this.address = address;
+        }
+
+        /**
+         * default
+         * baseSleepTimeMs = 1000 <br>
+         * maxRetries = 3 <br>
+         * lockWaitTime = 3s <br>
+         * address = "localhost:2181"
+         *
+         * @param lockPath zk distributed lock node directory
+         */
+        public ZkLockConfig(String lockPath) {
+            checkLockPath(lockPath);
+            this.lockPath = lockPath;
+        }
+    }
+
     private final Map<String, InterProcessMutex> mutexMap;
-    private int baseSleepTimeMs = 1000;
-    private int maxRetries = 3;
-    private long lockWaitTime = 3;
-    private TimeUnit lockWaitTimeTimeUnit = TimeUnit.SECONDS;
-    private String address = "localhost:2181";
     private CuratorFramework client;
 
+    private final ZkLockConfig lockConfig;
 
     /**
      * default <br>
-     * baseSleepTimeMs = 1000 <br>
-     * maxRetries = 3 <br>
-     * lockWaitTime = 3s <br>
-     * address = "localhost:2181"
      *
-     * @param lockPath zk distributed lock node directory, such as："/curator/lock/seckill" <br>
-     *                 ⚠⚠⚠ Note that the node cannot have '/' at the end
+     * @param lockPath {@link ZkLockConfig}
      */
     public ZkAwardLock(@NotNull String lockPath, @NotNull Set<String> awardIds) {
-
-        if (lockPath == null || lockPath.trim().length() <= 1 || lockPath.endsWith("/")) {
-            throw new IllegalArgumentException("The value of param 'lockPath' " + lockPath + " is illegal.");
-        }
-
-        if (awardIds == null || awardIds.size() == 0) {
-            throw new IllegalArgumentException("The count of award id must be > 0.");
-        }
-
-        this.lockPath = lockPath;
+        this.lockConfig = new ZkLockConfig(lockPath);
         this.mutexMap = new HashMap<>(awardIds.size());
         init(awardIds);
     }
 
-    public ZkAwardLock(String lockPath,
-                       int baseSleepTimeMs,
-                       int maxRetries,
-                       String address,
-                       long lockWaitTime,
-                       TimeUnit lockWaitTimeTimeUnit,
+    public ZkAwardLock(ZkLockConfig lockConfig,
                        Set<String> productIds) {
-        this.lockPath = lockPath;
-        this.baseSleepTimeMs = baseSleepTimeMs;
-        this.maxRetries = maxRetries;
-        this.address = address;
-        this.lockWaitTime = lockWaitTime;
-        this.lockWaitTimeTimeUnit = lockWaitTimeTimeUnit;
+        this.lockConfig = lockConfig;
         this.mutexMap = new HashMap<>(productIds.size());
         init(productIds);
     }
 
-    private void init(Set<String> productIds) {
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(baseSleepTimeMs, maxRetries);
-        client = CuratorFrameworkFactory.newClient(address, retryPolicy);
+    private void init(Set<String> awardIds) {
+        if (awardIds == null || awardIds.size() == 0) {
+            throw new IllegalArgumentException("The count of award id must be > 0.");
+        }
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(lockConfig.baseSleepTimeMs, lockConfig.maxRetries);
+        client = CuratorFrameworkFactory.newClient(lockConfig.address, retryPolicy);
         client.start();
         // shared reentrant lock
-        productIds.forEach(productId -> mutexMap.put(productId, new InterProcessMutex(client, lockPath + "/" + productId)));
+        awardIds.forEach(productId -> mutexMap.put(productId, new InterProcessMutex(client, lockConfig.lockPath + "/" + productId)));
     }
 
 
@@ -106,7 +132,7 @@ public class ZkAwardLock implements AwardLock {
     public boolean tryLock(String id) {
 
         try {
-            return mutexMap.get(id).acquire(lockWaitTime, lockWaitTimeTimeUnit);
+            return mutexMap.get(id).acquire(lockConfig.lockWaitTime, lockConfig.lockWaitTimeTimeUnit);
         } catch (Exception e) {
             e.printStackTrace();
         }

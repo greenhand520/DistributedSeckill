@@ -56,4 +56,9 @@ public class LocalAwardRepository implements AwardRepository {
             return new UpdateRes(false, 0);
         }
     }
+
+    @Override
+    public void clear() {
+        cache.clear();
+    }
 }

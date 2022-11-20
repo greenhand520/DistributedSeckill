@@ -6,6 +6,7 @@ import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,7 +26,8 @@ public class RedissonTokenLimitFilter<R> extends TokenLimitFilter<R> {
                                     RedissonClient redissonClient, String key, AwardSeckill seckill) {
         super(order, ratePerSec, timeout, cache, seckill);
         this.rateLimiter = redissonClient.getRateLimiter(key);
-        rateLimiter.setRate(RateType.OVERALL, ratePerSec, 1, RateIntervalUnit.SECONDS);
+        this.rateLimiter.setRate(RateType.OVERALL, ratePerSec, 1, RateIntervalUnit.SECONDS);
+        this.rateLimiter.expire(Duration.ofMillis(seckill.getExpireTime()));
     }
 
     @Override

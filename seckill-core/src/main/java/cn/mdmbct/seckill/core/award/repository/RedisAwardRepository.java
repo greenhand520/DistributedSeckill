@@ -32,8 +32,7 @@ public class RedisAwardRepository implements AwardRepository {
         seckill.getAwards().forEach(award -> {
             RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.getId()));
             awardCount.set(award.getRemainCount().longValue());
-            // Expires in 5 seconds after the event ends
-            awardCount.expire(Duration.ofMillis(seckill.getTtl() * 1000 + 5000));
+            awardCount.expire(Duration.ofMillis(seckill.getExpireTime()));
         });
 
 
@@ -68,5 +67,10 @@ public class RedisAwardRepository implements AwardRepository {
             e.printStackTrace();
             return new UpdateRes(false, 0);
         }
+    }
+
+    @Override
+    public void clear() {
+        keyCache.clear();
     }
 }

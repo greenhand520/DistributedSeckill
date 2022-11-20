@@ -39,6 +39,8 @@ public interface AwardRepository {
      */
     UpdateRes updateCount(String id, int newCount);
 
+    void clear();
+
     @Getter
     @ToString
     @RequiredArgsConstructor

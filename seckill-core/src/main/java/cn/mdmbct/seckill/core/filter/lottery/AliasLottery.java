@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.award.lottery;
+package cn.mdmbct.seckill.core.filter.lottery;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package cn.mdmbct.seckill.core.filter.window;
+package cn.mdmbct.seckill.core.filter.count;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,49 +8,24 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Sliding time window for single server node
+ * Sliding time window for single node server
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/8 下午5:21
  * @modified mdmbct
  * @since 1.0
  */
-public class LocalSlidingTimeWindow implements SlidingTimeWindow {
-
-    /**
-     * 单位时间分割多少块
-     */
-    private final int slot;
-
-    /**
-     * 单位时间限制次数
-     */
-    private final int limit;
-
-    /**
-     *
-     * 单位时间单位
-     */
-    private final TimeUnit timeUnit;
+public class LocalSlidingTimeWindow extends SlidingTimeWindowCount {
 
     /**
      * 记录窗口滑动的Node
      */
     private Node lastNode;
 
-//    private ArrayList<Node> nodes;
+    public LocalSlidingTimeWindow(int slot, TimeUnit timeUnit, int limit) {
+        super(slot, timeUnit, limit);
 
-    /**
-     * 每个slot的时间段
-     */
-    private long slotTime;
-
-    public LocalSlidingTimeWindow(int slot, int limit, TimeUnit timeUnit) {
-        this.slot = slot;
-        this.limit = limit;
-        this.timeUnit = timeUnit;
-
-        // 初始化
+        // init
         Node curNode = null;
         final long curMs = System.currentTimeMillis();
         for (int i = 0; i < slot; i++) {
@@ -63,13 +38,12 @@ public class LocalSlidingTimeWindow implements SlidingTimeWindow {
             }
         }
         lastNode.next = curNode;
-        this.slotTime = TimeUnit.MILLISECONDS.convert(1, timeUnit) / slot;
-
     }
 
 
     /**
      * 获取当前窗口总数
+     *
      * @return
      */
     private long getSum() {
@@ -84,6 +58,7 @@ public class LocalSlidingTimeWindow implements SlidingTimeWindow {
 
     /**
      * 重设位于index的Node数据 其中count = 0
+     *
      * @param index 位置
      * @param curMs 当前毫秒时间
      */
@@ -112,6 +87,7 @@ public class LocalSlidingTimeWindow implements SlidingTimeWindow {
 
     /**
      * 检查是否超限 如果未超限 次数加1
+     *
      * @return 是否超限
      */
     public synchronized boolean checkAndAdd() {
@@ -124,7 +100,15 @@ public class LocalSlidingTimeWindow implements SlidingTimeWindow {
         return true;
     }
 
+    @Override
+    public int increaseOne(String participantId) {
+        return 0;
+    }
 
+    @Override
+    public void clear() {
+
+    }
 
     /**
      * 用滑动窗口来限流时，设置的单位时间越小，分割的时间越多，统计就会越准确。

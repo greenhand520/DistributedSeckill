@@ -1,11 +1,10 @@
-package cn.mdmbct.seckill.core.filter;
+package cn.mdmbct.seckill.core.filter.lottery;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.Award;
 import cn.mdmbct.seckill.core.award.AwardSeckill;
-import cn.mdmbct.seckill.core.award.lottery.AliasLottery;
-import cn.mdmbct.seckill.core.award.lottery.Lottery;
-import cn.mdmbct.seckill.core.award.lottery.WeightRandomLottery;
+import cn.mdmbct.seckill.core.filter.AwardQuantityFilter;
+import cn.mdmbct.seckill.core.filter.Filter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,25 +18,25 @@ import java.util.stream.Collectors;
  * @modified mdmbct
  * @since 0.1
  */
-public class LuckyDrawFilter extends Filter<Award> {
+public class LotteryDrawFilter extends Filter<Award> {
 
     private final Lottery lottery;
 
     private final List<Award> awards;
 
-    public LuckyDrawFilter(Lottery lottery, AwardSeckill awardSeckill) {
+    public LotteryDrawFilter(Lottery lottery, AwardSeckill awardSeckill) {
         super(LAST_FILTER_ORDER - 1);
         this.lottery = lottery;
         lottery.setProbabilities(awardSeckill.getAwards().stream().map(Award::getProbability).collect(Collectors.toList()));
         this.awards = awardSeckill.getAwards();
     }
 
-    public static LuckyDrawFilter aliasLottery(AwardSeckill seckill) {
-        return new LuckyDrawFilter(new AliasLottery(), seckill);
+    public static LotteryDrawFilter aliasLottery(AwardSeckill seckill) {
+        return new LotteryDrawFilter(new AliasLottery(), seckill);
     }
 
-    public static LuckyDrawFilter weightRandomLottery(AwardSeckill seckill) {
-        return new LuckyDrawFilter(new WeightRandomLottery(), seckill);
+    public static LotteryDrawFilter weightRandomLottery(AwardSeckill seckill) {
+        return new LotteryDrawFilter(new WeightRandomLottery(), seckill);
     }
 
     @Override

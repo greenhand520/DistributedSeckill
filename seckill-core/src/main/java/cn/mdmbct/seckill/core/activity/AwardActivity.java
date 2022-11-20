@@ -82,5 +82,6 @@ public class AwardActivity extends Activity<Award> {
     public void clear() {
         filterChain.clear();
         // todo: delete redis cache by key prefix
+        // ref: https://cloud.tencent.com/developer/article/1447147
     }
 }

@@ -37,6 +37,8 @@ public class AwardSeckill implements Serializable {
 
     private List<Award> awards;
 
+    private final long expireTime;
+
     public AwardSeckill(@NotNull String id, long ttl, long startTime, Collection<Award> awards) {
         if (id == null) {
             throw new IllegalArgumentException("The param 'id' must not be mull");
@@ -50,6 +52,8 @@ public class AwardSeckill implements Serializable {
         this.id = id;
         this.ttl = ttl;
         this.startTime = startTime;
+        // Expires in 5 seconds after the activity ends
+        this.expireTime = ttl * 1000 + 5000;
         setAwards(awards);
     }
 

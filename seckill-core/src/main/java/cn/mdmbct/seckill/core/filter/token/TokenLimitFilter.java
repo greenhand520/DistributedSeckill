@@ -47,7 +47,7 @@ public abstract class TokenLimitFilter<R> extends Filter<R> {
         this.timeout = timeout;
         this.cache = cache;
         this.activityStartTime = seckill.getStartTime();
-        this.activityEndTime = activityStartTime + seckill.getTtl();
+        this.activityEndTime = activityStartTime + seckill.getTtl() * 1000;
     }
 
     /**
@@ -91,6 +91,5 @@ public abstract class TokenLimitFilter<R> extends Filter<R> {
         if (cache != null) {
             cache.clear();
         }
-
     }
 }

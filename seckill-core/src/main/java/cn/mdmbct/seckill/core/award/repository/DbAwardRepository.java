@@ -81,4 +81,9 @@ public class DbAwardRepository implements AwardRepository {
          */
         private final int newCount;
     }
+
+    @Override
+    public void clear() {
+
+    }
 }

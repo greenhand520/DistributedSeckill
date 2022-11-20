@@ -24,6 +24,8 @@ public class FilterContext<R> {
     private String awardId;
     private final Participant participant;
 
+//    private final AwardSeckill seckill;
+
     /**
      * the result of thread compete. <br>
      * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.AwardSeckill} <br>

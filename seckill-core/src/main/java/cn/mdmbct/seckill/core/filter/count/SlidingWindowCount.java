@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class SlidingTimeWindowCount implements ParticipationCount {
+public abstract class SlidingWindowCount implements ParticipationCount {
 
     /**
      * the count of blocks are divided per unit time, <br>
@@ -30,12 +30,18 @@ public abstract class SlidingTimeWindowCount implements ParticipationCount {
      */
     protected final int limit;
 
-    public SlidingTimeWindowCount(int slot, TimeUnit timeUnit, int limit) {
+    /**
+     * window time, unit: ms
+     */
+    protected final long windowTime;
+
+    public SlidingWindowCount(int slot, TimeUnit timeUnit, int limit) {
         if (slot <= 0 || limit <= 0) {
             throw new IllegalArgumentException("Both of the param 'slot' and 'limit' must be > 0.");
         }
         this.slot = slot;
         this.limit = limit;
-        this.slotTime = TimeUnit.MILLISECONDS.convert(1, timeUnit) / slot;
+        this.windowTime = TimeUnit.MILLISECONDS.convert(1, timeUnit);
+        this.slotTime = windowTime / slot;
     }
 }

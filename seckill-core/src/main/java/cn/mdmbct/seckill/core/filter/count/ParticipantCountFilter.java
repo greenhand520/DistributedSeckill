@@ -34,7 +34,7 @@ public class ParticipantCountFilter<R> extends Filter<R> {
         } else {
             return new ParticipantCountFilter<>(order,
                     participationCountLimit,
-                    new LocalSlidingTimeWindow(secTimeSlots, TimeUnit.SECONDS, participationCountLimit / secTimeSlots));
+                    new LocalSlidingWindowCount(secTimeSlots, TimeUnit.SECONDS, participationCountLimit / secTimeSlots));
         }
     }
 
@@ -46,7 +46,7 @@ public class ParticipantCountFilter<R> extends Filter<R> {
         } else {
             return new ParticipantCountFilter<>(order,
                     participationCountLimit,
-                    new RedisSlidingTimeWindow(redissonClient, secTimeSlots, TimeUnit.SECONDS, participationCountLimit / secTimeSlots));
+                    new RedisSlidingWindowCount(redissonClient, secTimeSlots, TimeUnit.SECONDS, participationCountLimit / secTimeSlots, seckillId));
         }
     }
 

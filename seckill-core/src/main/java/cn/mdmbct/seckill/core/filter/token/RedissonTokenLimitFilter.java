@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redisson的令牌限流 可针对多节点使用
+ * Redisson's token current limit can be used for multiple nodes servers
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/11 上午9:42
@@ -21,12 +21,12 @@ public class RedissonTokenLimitFilter<R> extends TokenLimitFilter<R> {
 
     private final RRateLimiter rateLimiter;
 
-    public RedissonTokenLimitFilter(int order, int ratePerSec, long timeout,
-                                    NoAcquireParticipantCache cache,
-                                    RedissonClient redissonClient, String key, AwardSeckill seckill) {
+    public RedissonTokenLimitFilter(int order, int ratePerSec, long timeout, RateType rateType,
+                                    RedisNoAcquireParticipantCache cache,
+                                    RedissonClient redissonClient, AwardSeckill seckill) {
         super(order, ratePerSec, timeout, cache, seckill);
-        this.rateLimiter = redissonClient.getRateLimiter(key);
-        this.rateLimiter.setRate(RateType.OVERALL, ratePerSec, 1, RateIntervalUnit.SECONDS);
+        this.rateLimiter = redissonClient.getRateLimiter("DSK:" + seckill.getId() + ":token");
+        this.rateLimiter.setRate(rateType, ratePerSec, 1, RateIntervalUnit.SECONDS);
         this.rateLimiter.expire(Duration.ofMillis(seckill.getExpireTime()));
     }
 

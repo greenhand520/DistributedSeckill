@@ -16,7 +16,7 @@ import java.util.concurrent.locks.StampedLock;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class LocalCache<K, V> implements Cache<K, V> {
+public class LocalCache<K, V> implements Cache<K, V> {
 
     private static final long serialVersionUID = -4912286546402153448L;
     private Map<K, CacheObj<V>> map;
@@ -34,32 +34,31 @@ public abstract class LocalCache<K, V> implements Cache<K, V> {
     private ScheduledFuture<?> clearJob;
 
     @Setter
-    private long ttl;
+    private long defaultTtl;
 
     public LocalCache() {
         this.map = new HashMap<>();
     }
 
-    public LocalCache(long ttl) {
-        this.ttl = ttl;
+    public LocalCache(long defaultTtl) {
+        this.defaultTtl = defaultTtl;
     }
 
     /**
-     *
-     * @param key key
+     * @param key                key
      * @param isUpdateAccessTime is update access time
      * @return value
      */
     @Override
     public V getValue(K key, boolean isUpdateAccessTime) {
         long optimisticReadLockStamp = lock.tryOptimisticRead();
-        V value = getValueWithLock(key, isUpdateAccessTime);
+        V value = getValueWithoutLock(key, isUpdateAccessTime);
         // validate update by writing thread
         if (!lock.validate(optimisticReadLockStamp)) {
             // if a writing thread updated it, use pessimistic lock to re-read
             long readLockStamp = lock.readLock();
             try {
-                value = getValueWithLock(key, isUpdateAccessTime);
+                value = getValueWithoutLock(key, isUpdateAccessTime);
             } finally {
                 lock.unlockRead(readLockStamp);
             }
@@ -67,7 +66,7 @@ public abstract class LocalCache<K, V> implements Cache<K, V> {
         return value;
     }
 
-    public V getValueWithLock(K key, boolean isUpdateAccessTime) {
+    public V getValueWithoutLock(K key, boolean isUpdateAccessTime) {
         CacheObj<V> vCacheObj = map.get(key);
         if (vCacheObj.isExpired()) {
             map.remove(key);
@@ -82,8 +81,9 @@ public abstract class LocalCache<K, V> implements Cache<K, V> {
 
     /**
      * use new ttl
-     * @param key key
-     * @param value value
+     *
+     * @param key    key
+     * @param value  value
      * @param newTtl time of survival
      * @return is it added successfully
      */
@@ -91,20 +91,59 @@ public abstract class LocalCache<K, V> implements Cache<K, V> {
     public boolean put(K key, V value, long newTtl) {
         long stamp = lock.writeLock();
         try {
-            putWithoutLock(key, value, newTtl);
+            putWithoutLock(key, value, newTtl > 0 ? newTtl : defaultTtl);
         } finally {
-            lock.unlockRead(stamp);
+            lock.unlockWrite(stamp);
         }
         return true;
     }
 
     /**
      * use default ttl
-     * @param key key
+     *
+     * @param key   key
      * @param value value
      */
     public void put(K key, V value) {
-        put(key, value, ttl);
+        put(key, value, defaultTtl);
+    }
+
+    @Override
+    public boolean putIfAbsent(K key, V value, long ttl) {
+
+        long optimisticReadStamp = lock.tryOptimisticRead();
+        CacheObj<V> vCacheObj = map.get(key);
+        if (lock.validate(optimisticReadStamp)) {
+            // no other thread put elements
+
+            if (vCacheObj == null) {
+                put(key, value, ttl > 0 ? ttl : defaultTtl);
+            } else if (ttl > 0) {
+                vCacheObj.setTtl(ttl);
+            }
+
+        } else {
+            // a writing thread put elements, re-read
+            long stamp = lock.readLock();
+            try {
+                vCacheObj = map.get(key);
+
+                if (vCacheObj == null) {
+                    put(key, value, ttl > 0 ? ttl : defaultTtl);
+                } else if (ttl > 0) {
+                    vCacheObj.setTtl(ttl);
+                }
+
+            } finally {
+                lock.unlockRead(stamp);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public V remove(K key) {
+        return null;
     }
 
     @Override
@@ -131,5 +170,10 @@ public abstract class LocalCache<K, V> implements Cache<K, V> {
         } finally {
             lock.unlockWrite(stamp);
         }
+    }
+
+    @Override
+    public void clearAll() {
+        map.clear();
     }
 }

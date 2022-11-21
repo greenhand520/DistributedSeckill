@@ -22,6 +22,22 @@ public interface Cache<K, V> extends Serializable {
     boolean put(K key, V value, long ttl);
 
     /**
+     * if the key is not existed, put it
+     * @param key key
+     * @param value value
+     * @param ttl if ttl is > 0, update the ttl.
+     * @return is it added successfully
+     */
+    boolean putIfAbsent(K key, V value, long ttl);
+
+    /**
+     *
+     * @param key key
+     * @return the removed obj
+     */
+    V remove(K key);
+
+    /**
      * auto clear the expired obj
      * @param delay scheduled cleanup interval
      */
@@ -33,5 +49,7 @@ public interface Cache<K, V> extends Serializable {
      * clear the expired obj immediately.
      */
     void clear();
+
+    void clearAll();
 
 }

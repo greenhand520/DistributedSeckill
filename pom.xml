@@ -26,7 +26,6 @@
         <disruptor.version>3.4.4</disruptor.version>
         <guava.version>31.1-jre</guava.version>
         <lombok.version>1.18.20</lombok.version>
-        <jedis.version>4.3.0</jedis.version>
         <redisson.version>3.17.7</redisson.version>
         <junit.version>4.13.2</junit.version>
         <sl4j.version>1.7.30</sl4j.version>
@@ -94,11 +93,6 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>${jedis.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>

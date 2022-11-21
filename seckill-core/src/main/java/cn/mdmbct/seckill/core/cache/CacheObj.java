@@ -1,6 +1,7 @@
 package cn.mdmbct.seckill.core.cache;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -21,7 +22,8 @@ public class CacheObj<V> implements Serializable {
      * time of survival after of accessed。
      */
     @Getter
-    private final long ttl;
+    @Setter
+    private long ttl;
 
     /**
      * last access time. new or get operational will update it.

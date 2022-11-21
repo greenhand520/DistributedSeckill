@@ -28,7 +28,7 @@ public class AwardSeckill implements Serializable {
     /**
      * seckill duration, unit: second
      */
-    protected final long ttl;
+    protected final long duration;
 
     /**
      * activity start time
@@ -39,21 +39,21 @@ public class AwardSeckill implements Serializable {
 
     private final long expireTime;
 
-    public AwardSeckill(@NotNull String id, long ttl, long startTime, Collection<Award> awards) {
+    public AwardSeckill(@NotNull String id, long duration, long startTime, Collection<Award> awards) {
         if (id == null) {
             throw new IllegalArgumentException("The param 'id' must not be mull");
         }
 
-        if (ttl <= 0 || startTime <= 0) {
+        if (duration <= 0 || startTime <= 0) {
             throw new IllegalArgumentException("The parma 'ttl' and 'startTime' both must be > 0, the illegal parma are "
-                    + ttl + " and " + startTime);
+                    + duration + " and " + startTime);
         }
 
         this.id = id;
-        this.ttl = ttl;
+        this.duration = duration;
         this.startTime = startTime;
         // Expires in 5 seconds after the activity ends
-        this.expireTime = ttl * 1000 + 5000;
+        this.expireTime = duration * 1000 + 5000;
         setAwards(awards);
     }
 

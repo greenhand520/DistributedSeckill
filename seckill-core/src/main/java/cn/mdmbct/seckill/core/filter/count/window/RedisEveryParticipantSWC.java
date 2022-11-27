@@ -21,7 +21,7 @@ public class RedisEveryParticipantSWC extends SlidingWindowCount {
     private final String keyPrefix;
 
     public RedisEveryParticipantSWC(RedissonClient redissonClient, /*int slot, */TimeUnit timeUnit, int limit, String seckillId) {
-        super(/*slot,*/ timeUnit, limit);
+        super(/*slot,*/ timeUnit);
         this.redissonClient = redissonClient;
         this.keyPrefix = "DSK:" + seckillId + ":EveryParticipantSWC:";
     }

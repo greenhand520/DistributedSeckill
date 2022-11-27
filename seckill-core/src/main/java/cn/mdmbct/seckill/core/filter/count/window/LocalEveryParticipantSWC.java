@@ -82,14 +82,14 @@ public class LocalEveryParticipantSWC extends SlidingWindowCount {
 
     private final Cache<String, TreeSetSWC> countCache;
 
-    public LocalEveryParticipantSWC(TimeUnit timeUnit, int limit) {
-        super(timeUnit, limit);
+    public LocalEveryParticipantSWC(TimeUnit timeUnit) {
+        super(timeUnit);
         this.countCache = BaseLocalCache.concurrentHashMapCache(windowTime);
     }
 
     @Override
     public int increaseOne(String participantId) {
-        TreeSetSWC count = countCache.putIfAbsent(participantId, TreeSetSWC.defaultLocalParticipantsSWC(TimeUnit.SECONDS, limit),
+        TreeSetSWC count = countCache.putIfAbsent(participantId, TreeSetSWC.defaultLocalParticipantsSWC(TimeUnit.SECONDS),
                 windowTime, true);
         return count.increaseOne(participantId);
     }

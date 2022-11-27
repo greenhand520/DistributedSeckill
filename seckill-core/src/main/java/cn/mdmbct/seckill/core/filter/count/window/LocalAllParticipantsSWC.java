@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class LocalAllParticipantsSWC extends TreeSetSWC {
 
-    public LocalAllParticipantsSWC(TimeUnit timeUnit, int limit) {
-        super(timeUnit, limit);
+    public LocalAllParticipantsSWC(TimeUnit timeUnit) {
+        super(timeUnit);
     }
 
     @Override

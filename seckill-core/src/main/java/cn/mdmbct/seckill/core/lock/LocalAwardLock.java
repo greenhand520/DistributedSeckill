@@ -46,7 +46,7 @@ public class LocalAwardLock implements AwardLock {
     @Override
     public boolean tryLock(String id) {
         try {
-            final ReentrantLock lock = MapUtils.computeIfAbsent(awardLocks, id, key -> new ReentrantLock(false));
+            ReentrantLock lock = MapUtils.computeIfAbsent(awardLocks, id, key -> new ReentrantLock(false));
             return lock.tryLock(lockWaitTime, timeUnit);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class LocalAwardLock implements AwardLock {
 
     @Override
     public void unLock(String id) {
-        final ReentrantLock lock = awardLocks.get(id);
+        ReentrantLock lock = awardLocks.get(id);
         if (lock != null && lock.isHeldByCurrentThread()) {
             lock.unlock();
             // Adding this will cause a few unlucky threads to fail to acquire the lock

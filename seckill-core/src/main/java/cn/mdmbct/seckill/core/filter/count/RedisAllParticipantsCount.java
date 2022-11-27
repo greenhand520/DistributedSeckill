@@ -15,17 +15,17 @@ public class RedisAllParticipantsCount implements Counter {
 
     private final RedissonClient redissonClient;
 
-    private final String countCachePrefix;
+    private final String key;
 
     public RedisAllParticipantsCount(RedissonClient redissonClient, String seckillId) {
         this.redissonClient = redissonClient;
-        // DSK:${seckillId}:ParticipationCount:${participantId}
-        this.countCachePrefix = "DSK:" + seckillId + ":ParticipationCount:";
+        // DSK:${seckillId}:AllParticipantsC
+        this.key = "DSK:" + seckillId + ":AllParticipantsC:";
     }
 
     @Override
     public int increaseOne(String participantId) {
-        RAtomicLong count = redissonClient.getAtomicLong(countCachePrefix + participantId);
+        RAtomicLong count = redissonClient.getAtomicLong(key);
         return (int) count.incrementAndGet();
     }
 

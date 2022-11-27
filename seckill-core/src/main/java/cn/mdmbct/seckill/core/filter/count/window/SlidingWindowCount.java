@@ -30,20 +30,24 @@ public abstract class SlidingWindowCount implements Counter {
     /**
      * limit times per unit time
      */
-    protected final int limit;
+//    protected final int limit;
 
     /**
      * window time, unit: ms
      */
     protected final long windowTime;
 
-    public SlidingWindowCount(/*int slot, */TimeUnit timeUnit, int limit) {
-        if (/*slot <= 0 || */limit <= 0) {
-            throw new IllegalArgumentException("Both of the param 'limit' must be > 0.");
-        }
+//    public SlidingWindowCount(/*int slot, */TimeUnit timeUnit/*, int limit*/) {
+//        if (slot <= 0 || limit <= 0) {
+//            throw new IllegalArgumentException("Both of the param 'limit' must be > 0.");
+//        }
 //        this.slot = slot;
-        this.limit = limit;
-        this.windowTime = TimeUnit.MILLISECONDS.convert(1, timeUnit);
+//        this.limit = limit;
+//        this.windowTime = TimeUnit.MILLISECONDS.convert(1, timeUnit);
 //        this.slotTime = windowTime / slot;
+//    }
+
+    public SlidingWindowCount(TimeUnit timeUnit) {
+        this.windowTime = TimeUnit.MILLISECONDS.convert(1, timeUnit);
     }
 }

@@ -1,7 +1,6 @@
 package cn.mdmbct.seckill.core.filter.count;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.filter.Filter;
 import org.redisson.api.RedissonClient;
 
 /**
@@ -12,23 +11,17 @@ import org.redisson.api.RedissonClient;
  * @modified mdmbct
  * @since 0.1
  */
-public class AllParticipantsCountFilter<R> extends Filter<R> {
+public class AllParticipantsCountFilter<R> extends CountFilter<R> {
 
-    private final int participantsCountLimit;
-
-    private final Counter participationCount;
-
-    public AllParticipantsCountFilter(int order, int participantsCountLimit, Counter participationCount) {
-        super(order);
-        this.participantsCountLimit = participantsCountLimit;
-        this.participationCount = participationCount;
+    private AllParticipantsCountFilter(int order, int participantsCountLimit, Counter counter) {
+        super(order, participantsCountLimit, counter);
     }
 
-    public static <R> AllParticipantsCountFilter<R> localAllCount(int order, int participantsCountLimit) {
+    public static <R> AllParticipantsCountFilter<R> localCount(int order, int participantsCountLimit) {
         return new AllParticipantsCountFilter<>(order, participantsCountLimit, new LocalAllParticipantsCount());
     }
 
-    public static <R> AllParticipantsCountFilter<R> redisAllCount(int order, int participantsCountLimit, RedissonClient redissonClient, String seckillId) {
+    public static <R> AllParticipantsCountFilter<R> redisCount(int order, int participantsCountLimit, RedissonClient redissonClient, String seckillId) {
         return new AllParticipantsCountFilter<>(order, participantsCountLimit,
                 new RedisAllParticipantsCount(redissonClient, seckillId));
     }
@@ -41,12 +34,12 @@ public class AllParticipantsCountFilter<R> extends Filter<R> {
 
     @Override
     public boolean doFilter(Participant participant, String awardId) {
-        return participationCount.increaseOne() <= participantsCountLimit;
+        return counter.increaseOne() <= countLimit;
     }
 
     @Override
     public void clear() {
         super.clear();
-        participationCount.clear();
+        counter.clear();
     }
 }

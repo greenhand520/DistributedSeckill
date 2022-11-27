@@ -22,8 +22,8 @@ public abstract class TreeSetSWC extends SlidingWindowCount {
 
     private final ScheduledFuture<?> clearJob;
 
-    public TreeSetSWC(TimeUnit timeUnit, int limit) {
-        super(timeUnit, limit);
+    public TreeSetSWC(TimeUnit timeUnit) {
+        super(timeUnit);
         this.counter = new TreeSet<>();
         this.clearJob = CacheClearService.instacne().addClearJob(this::clearExpired, windowTime);
     }
@@ -50,8 +50,8 @@ public abstract class TreeSetSWC extends SlidingWindowCount {
         counter.clear();
     }
 
-    public static TreeSetSWC defaultLocalParticipantsSWC(TimeUnit timeUnit, int limit) {
-        return new TreeSetSWC(timeUnit, limit) {
+    public static TreeSetSWC defaultLocalParticipantsSWC(TimeUnit timeUnit) {
+        return new TreeSetSWC(timeUnit) {
             @Override
             public synchronized int increaseOne() {
                 return increaseOneToCounter();

@@ -19,8 +19,8 @@ public class RedisSlidingWindowCount extends SlidingWindowCount {
 
     private final String keyPrefix;
 
-    public RedisSlidingWindowCount(RedissonClient redissonClient, int slot, TimeUnit timeUnit, int limit, String seckillId) {
-        super(slot, timeUnit, limit);
+    public RedisSlidingWindowCount(RedissonClient redissonClient, /*int slot, */TimeUnit timeUnit, int limit, String seckillId) {
+        super(/*slot,*/ timeUnit, limit);
         this.redissonClient = redissonClient;
         this.keyPrefix = "DSK:" + seckillId + ":WindowCount:";
     }

@@ -4,19 +4,19 @@ import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.StampedLock;
 
 /**
- * a cache impl by hash map, which each element in it has an expired time. <br>
- * you can clear the expired elements manually or use method {@link LocalCache#autoClear(long)} to clear automatically.
+ * a cache impl by hash map, which each element in it has an expired time and protected by {@link StampedLock}. <br>
+ * you can clear the expired elements manually by method {@link StampedLocalCache#clear()} or
+ * use method {@link StampedLocalCache#autoClear(long)} to clear automatically.
  *
  * @author mdmbct  mdmbct@outlook.com
- * @date 2022/11/21 上午9:00
+ * @date 2022/11/21 下午7:00
  * @modified mdmbct
  * @since 1.0
  */
-public class LocalCache<K, V> implements Cache<K, V> {
+public class StampedLocalCache<K, V> extends BaseLocalCache<K, V> {
 
     private static final long serialVersionUID = -4912286546402153448L;
     private Map<K, CacheObj<V>> map;
@@ -31,16 +31,14 @@ public class LocalCache<K, V> implements Cache<K, V> {
      */
     private final StampedLock lock = new StampedLock();
 
-    private ScheduledFuture<?> clearJob;
-
     @Setter
-    private long defaultTtl;
+    private long defaultTtl = 0;
 
-    public LocalCache() {
+    public StampedLocalCache() {
         this.map = new HashMap<>();
     }
 
-    public LocalCache(long defaultTtl) {
+    public StampedLocalCache(long defaultTtl) {
         this.defaultTtl = defaultTtl;
     }
 
@@ -85,17 +83,15 @@ public class LocalCache<K, V> implements Cache<K, V> {
      * @param key    key
      * @param value  value
      * @param newTtl time of survival
-     * @return is it added successfully
      */
     @Override
-    public boolean put(K key, V value, long newTtl) {
+    public void put(K key, V value, long newTtl) {
         long stamp = lock.writeLock();
         try {
             putWithoutLock(key, value, newTtl > 0 ? newTtl : defaultTtl);
         } finally {
             lock.unlockWrite(stamp);
         }
-        return true;
     }
 
     /**
@@ -109,7 +105,7 @@ public class LocalCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public boolean putIfAbsent(K key, V value, long ttl) {
+    public V putIfAbsent(K key, V value, long ttl, boolean isUpdateAccessTime) {
 
         long optimisticReadStamp = lock.tryOptimisticRead();
         CacheObj<V> vCacheObj = map.get(key);
@@ -118,43 +114,39 @@ public class LocalCache<K, V> implements Cache<K, V> {
 
             if (vCacheObj == null) {
                 put(key, value, ttl > 0 ? ttl : defaultTtl);
+                return value;
             } else if (ttl > 0) {
                 vCacheObj.setTtl(ttl);
             }
+            return vCacheObj.getValue();
 
         } else {
-            // a writing thread put elements, re-read
+            // another writing thread is putting elements, re-read
             long stamp = lock.readLock();
             try {
                 vCacheObj = map.get(key);
 
                 if (vCacheObj == null) {
                     put(key, value, ttl > 0 ? ttl : defaultTtl);
+                    return value;
                 } else if (ttl > 0) {
                     vCacheObj.setTtl(ttl);
                 }
+                return vCacheObj.getValue();
 
             } finally {
                 lock.unlockRead(stamp);
             }
         }
-        return true;
     }
 
     @Override
     public V remove(K key) {
-        return null;
-    }
-
-    @Override
-    public void autoClear(long delay) {
-        this.clearJob = CacheClearService.instacne().addClearJob(this::clear, delay);
-    }
-
-    @Override
-    public void stopAutoClear() {
-        if (clearJob != null) {
-            clearJob.cancel(true);
+        long stamp = lock.writeLock();
+        try {
+            return map.remove(key).getValue();
+        } finally {
+            lock.unlockWrite(stamp);
         }
     }
 
@@ -172,8 +164,4 @@ public class LocalCache<K, V> implements Cache<K, V> {
         }
     }
 
-    @Override
-    public void clearAll() {
-        map.clear();
-    }
 }

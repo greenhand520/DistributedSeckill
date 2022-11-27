@@ -46,7 +46,7 @@ public class LocalAwardLock implements AwardLock {
     @Override
     public boolean tryLock(String id) {
         try {
-            final ReentrantLock lock = MapUtils.computeIfAbsent(awardLocks, id, key -> new ReentrantLock(true));
+            final ReentrantLock lock = MapUtils.computeIfAbsent(awardLocks, id, key -> new ReentrantLock(false));
             return lock.tryLock(lockWaitTime, timeUnit);
         } catch (InterruptedException e) {
             e.printStackTrace();

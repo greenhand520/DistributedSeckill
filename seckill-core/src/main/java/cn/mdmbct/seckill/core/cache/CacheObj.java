@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * @author mdmbct  mdmbct@outlook.com
- * @date 2022/11/21 上午8:24
+ * @date 2022/11/21 下午6:24
  * @modified mdmbct
  * @since 1.0
  */
@@ -54,6 +54,14 @@ public class CacheObj<V> implements Serializable {
         if (isUpdateAccessTime) {
             lastAccess = System.currentTimeMillis();
         }
+        return value;
+    }
+
+    /**
+     * do not update the access time.
+     * @return value
+     */
+    public V getValue() {
         return value;
     }
 

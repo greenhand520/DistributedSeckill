@@ -1,11 +1,16 @@
 package cn.mdmbct.seckill.core.cache;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * Attention: ⚠⚠⚠ it can not clear the expired element in time, but it will not be much slower
+ *
  * @author mdmbct  mdmbct@outlook.com
- * @date 2022/11/21 上午9:27
+ * @date 2022/11/21 下午6:27
  * @modified mdmbct
  * @since 1.0
  */
@@ -15,7 +20,7 @@ public class CacheClearService {
 
     private volatile static CacheClearService clearService = null;
 
-    private ScheduledExecutorService executorService;
+    private final ScheduledExecutorService executorService;
 
     private final AtomicInteger jobCount = new AtomicInteger(0);
 

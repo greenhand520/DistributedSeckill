@@ -48,8 +48,4 @@ public class CompleteRedPacketActivity extends Activity<Double> {
         // todo: may todo something else.
     }
 
-    @Override
-    public void clear() {
-        filterChain.clear();
-    }
 }

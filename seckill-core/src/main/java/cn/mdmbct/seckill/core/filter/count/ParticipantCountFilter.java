@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * Participation count will increase regardless of whether participant win the lottery or not.
  *
  * @author mdmbct  mdmbct@outlook.com
- * @date 2021/11/22 8:17
+ * @date 2021/11/22 下午8:17
  * @modified mdmbct
  * @since 0.1
  */
@@ -26,15 +26,12 @@ public class ParticipantCountFilter<R> extends Filter<R> {
         this.participationCount = participationCount;
     }
 
-    public static <R> ParticipantCountFilter<R> withLocalCount(int order, int participationCountLimit, int secTimeSlots) {
-        if (secTimeSlots <= 0) {
-            return new ParticipantCountFilter<>(order,
-                    participationCountLimit,
-                    new LocalParticipationCount());
+    public static <R> ParticipantCountFilter<R> withLocalCount(int order, int participationCountLimit, boolean isStatisticsAll/*, int secTimeSlots*/) {
+        if (isStatisticsAll) {
+            return new ParticipantCountFilter<>(order, participationCountLimit, new LocalParticipationCount());
         } else {
-            return new ParticipantCountFilter<>(order,
-                    participationCountLimit,
-                    new LocalSlidingWindowCount(secTimeSlots, TimeUnit.SECONDS, participationCountLimit / secTimeSlots));
+            return new ParticipantCountFilter<>(order, participationCountLimit,
+                    new LocalSlidingWindowCount(/*secTimeSlots, */TimeUnit.SECONDS, participationCountLimit));
         }
     }
 
@@ -46,7 +43,7 @@ public class ParticipantCountFilter<R> extends Filter<R> {
         } else {
             return new ParticipantCountFilter<>(order,
                     participationCountLimit,
-                    new RedisSlidingWindowCount(redissonClient, secTimeSlots, TimeUnit.SECONDS, participationCountLimit / secTimeSlots, seckillId));
+                    new RedisSlidingWindowCount(redissonClient, /*secTimeSlots,*/ TimeUnit.SECONDS, participationCountLimit / secTimeSlots, seckillId));
         }
     }
 

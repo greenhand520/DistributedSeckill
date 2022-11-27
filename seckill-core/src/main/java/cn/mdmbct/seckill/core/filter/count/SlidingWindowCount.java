@@ -18,12 +18,12 @@ public abstract class SlidingWindowCount implements ParticipationCount {
      * the count of blocks are divided per unit time, <br>
      * example: 1ms -> 1 times; 1S -> 10 times; 1min -> 1000 times.
      */
-    protected final int slot;
+//    protected final int slot;
 
     /**
      * the length of time for each slot(= timeUnit / slot), unit: ms
      */
-    protected final long slotTime;
+//    protected final long slotTime;
 
     /**
      * limit times per unit time
@@ -35,13 +35,13 @@ public abstract class SlidingWindowCount implements ParticipationCount {
      */
     protected final long windowTime;
 
-    public SlidingWindowCount(int slot, TimeUnit timeUnit, int limit) {
-        if (slot <= 0 || limit <= 0) {
-            throw new IllegalArgumentException("Both of the param 'slot' and 'limit' must be > 0.");
+    public SlidingWindowCount(/*int slot, */TimeUnit timeUnit, int limit) {
+        if (/*slot <= 0 || */limit <= 0) {
+            throw new IllegalArgumentException("Both of the param 'limit' must be > 0.");
         }
-        this.slot = slot;
+//        this.slot = slot;
         this.limit = limit;
         this.windowTime = TimeUnit.MILLISECONDS.convert(1, timeUnit);
-        this.slotTime = windowTime / slot;
+//        this.slotTime = windowTime / slot;
     }
 }

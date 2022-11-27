@@ -5,16 +5,18 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * Statistics all the participants count impl by {@link HashMap} and {@link AtomicInteger}
+ *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/20 上午9:23
  * @modified mdmbct
  * @since 1.0
  */
-public class LocalParticipationCount implements ParticipationCount {
+public class LocalAllParticipantsCount implements Counter {
 
     private final Map<String, AtomicInteger> countMap;
 
-    public LocalParticipationCount() {
+    public LocalAllParticipantsCount() {
         this.countMap = new HashMap<>();
     }
 

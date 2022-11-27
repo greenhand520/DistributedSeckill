@@ -4,18 +4,20 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 
 /**
+ * Statistics all the participant count impl by redis
+ *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/20 上午9:29
  * @modified mdmbct
  * @since 1.0
  */
-public class RedisParticipationCount implements ParticipationCount {
+public class RedisAllParticipantsCount implements Counter {
 
     private final RedissonClient redissonClient;
 
     private final String countCachePrefix;
 
-    public RedisParticipationCount(RedissonClient redissonClient, String seckillId) {
+    public RedisAllParticipantsCount(RedissonClient redissonClient, String seckillId) {
         this.redissonClient = redissonClient;
         // DSK:${seckillId}:ParticipationCount:${participantId}
         this.countCachePrefix = "DSK:" + seckillId + ":ParticipationCount:";

@@ -1,4 +1,6 @@
-package cn.mdmbct.seckill.core.filter.count;
+package cn.mdmbct.seckill.core.filter.count.window;
+
+import cn.mdmbct.seckill.core.filter.count.Counter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class SlidingWindowCount implements ParticipationCount {
+public abstract class SlidingWindowCount implements Counter {
 
     /**
      * the count of blocks are divided per unit time, <br>

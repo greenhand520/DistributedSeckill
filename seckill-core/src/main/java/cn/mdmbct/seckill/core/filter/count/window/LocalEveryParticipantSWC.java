@@ -1,24 +1,22 @@
-package cn.mdmbct.seckill.core.filter.count;
+package cn.mdmbct.seckill.core.filter.count.window;
 
 import cn.mdmbct.seckill.core.cache.BaseLocalCache;
 import cn.mdmbct.seckill.core.cache.Cache;
-import cn.mdmbct.seckill.core.cache.CacheClearService;
 
-import java.util.NavigableSet;
 import java.util.TreeSet;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 
 /**
- * Sliding time window for single node server <br>
+ * For single node server, statistics every participant count impl by sliding time window
+ * which impl by {@link TreeSet}  <br>
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/8 下午5:21
  * @modified mdmbct
  * @since 1.0
  */
-public class LocalSlidingWindowCount extends SlidingWindowCount {
+public class LocalEveryParticipantSWC extends SlidingWindowCount {
 
 //    private final Cache<String, ReentrantLock> lockCache;
 //    private final Cache<String, TreeSet<Long>> countCache;
@@ -82,77 +80,50 @@ public class LocalSlidingWindowCount extends SlidingWindowCount {
 //        countCache.clearAll();
 //    }
 
-    private Cache<String, LocalParticipantSlidingCount> countCache;
+    private final Cache<String, TreeSetSWC> countCache;
 
-    public LocalSlidingWindowCount(TimeUnit timeUnit, int limit) {
+    public LocalEveryParticipantSWC(TimeUnit timeUnit, int limit) {
         super(timeUnit, limit);
         this.countCache = BaseLocalCache.concurrentHashMapCache(windowTime);
     }
 
     @Override
     public int increaseOne(String participantId) {
-        LocalParticipantSlidingCount count = countCache.putIfAbsent(participantId, new LocalParticipantSlidingCount(TimeUnit.SECONDS, limit),
+        TreeSetSWC count = countCache.putIfAbsent(participantId, TreeSetSWC.defaultLocalParticipantsSWC(TimeUnit.SECONDS, limit),
                 windowTime, true);
         return count.increaseOne(participantId);
     }
 
     @Override
     public void clear() {
-        for (LocalParticipantSlidingCount value : countCache.values()) {
+        for (TreeSetSWC value : countCache.values()) {
             value.clear();
         }
         countCache.clearAll();
     }
 
     /**
-     * Sliding time window impl by {@link TreeSet} to statistics the number of participation
+     * Sliding time window impl by {@link TreeSet} to statistics the number of participant
      *
      * @author mdmbct  mdmbct@outlook.com
      * @date 2022/11/25 下午7:27
      * @modified mdmbct
      * @since 1.0
      */
-    public static class LocalParticipantSlidingCount extends SlidingWindowCount {
-
-//        @Getter
-//        private final String participantId;
-
-        private final TreeSet<Long> counter;
-
-        private final ScheduledFuture<?> clearJob;
-
-        private long expiredTime;
-
-
-        public LocalParticipantSlidingCount(/*String participantId, */TimeUnit timeUnit, int limit) {
-            super(timeUnit, limit);
-//            this.participantId = participantId;
-            this.counter = new TreeSet<>();
-            this.clearJob = CacheClearService.instacne().addClearJob(this::clearExpired, windowTime);
-        }
-
-        private void clearExpired() {
-            if (expiredTime > 0) {
-                counter.removeIf(aLong -> aLong < expiredTime);
-                expiredTime = 0;
-            }
-        }
-
-        @Override
-        public synchronized int increaseOne(String participantId) {
-            long now = System.currentTimeMillis();
-            counter.add(now);
-            this.expiredTime = now - windowTime;
-            NavigableSet<Long> navigableSet = counter.subSet(expiredTime, true, now, true);
-            return navigableSet.size();
-        }
-
-        @Override
-        public void clear() {
-            if (clearJob != null) {
-                clearJob.cancel(true);
-            }
-            counter.clear();
-        }
-    }
+//    public static class LocalParticipantSlidingCount extends TreeSetSWC {
+//
+////        @Getter
+////        private final String participantId;
+//
+//        public LocalParticipantSlidingCount(/*String participantId, */TimeUnit timeUnit, int limit) {
+//            super(timeUnit, limit);
+////            this.participantId = participantId;
+//        }
+//
+//        @Override
+//        public synchronized int increaseOne(String participantId) {
+//            return increaseOneToCounter();
+//        }
+//
+//    }
 }

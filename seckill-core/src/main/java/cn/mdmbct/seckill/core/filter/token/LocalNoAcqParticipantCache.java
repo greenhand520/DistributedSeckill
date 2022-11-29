@@ -13,8 +13,6 @@ import cn.mdmbct.seckill.core.cache.Cache;
  */
 public class LocalNoAcqParticipantCache implements NoAcquireParticipantCache {
 
-
-
     private final Cache<String, Object> cache;
 
     private static final Object V = new Object();

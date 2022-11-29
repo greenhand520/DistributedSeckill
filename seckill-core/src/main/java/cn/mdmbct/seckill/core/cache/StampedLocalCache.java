@@ -2,7 +2,9 @@ package cn.mdmbct.seckill.core.cache;
 
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.StampedLock;
 
@@ -151,17 +153,20 @@ public class StampedLocalCache<K, V> extends BaseLocalCache<K, V> {
     }
 
     @Override
-    public void clear() {
+    public List<K> clear() {
+        List<K> ks = new ArrayList<>();
         long stamp = lock.writeLock();
         try {
             for (K k : map.keySet()) {
                 if (map.get(k).isExpired()) {
+                    ks.add(k);
                     map.remove(k);
                 }
             }
         } finally {
             lock.unlockWrite(stamp);
         }
+        return ks;
     }
 
 }

@@ -1,24 +1,15 @@
 package cn.mdmbct.seckill.core.award.repository;
 
-import cn.mdmbct.seckill.core.lock.AwardLock;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-/**
- * 对商品数量修改在数据库中进行
- *
- * @author mdmbct  mdmbct@outlook.com
- * @date 2021/11/18 21:35
- * @modified mdmbct
- * @since 0.1
- */
-@RequiredArgsConstructor
+
 public class DbAwardRepository implements AwardRepository {
 
-    private final AwardLock lock;
+//    private final AwardLock lock;
 
     /**
      * 数量加1 并返回新的数量
@@ -35,6 +26,14 @@ public class DbAwardRepository implements AwardRepository {
     private final Function<String, Integer> dbIncrOneOp;
 
     private final Consumer<CountUpdateParams> dbUpdateOp;
+
+    public DbAwardRepository(Function<String, Integer> dbDecrOneOp,
+                             Function<String, Integer> dbIncrOneOp,
+                             Consumer<CountUpdateParams> dbUpdateOp) {
+        this.dbDecrOneOp = dbDecrOneOp;
+        this.dbIncrOneOp = dbIncrOneOp;
+        this.dbUpdateOp = dbUpdateOp;
+    }
 
     @Override
     public UpdateRes incrOne(String id) {

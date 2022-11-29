@@ -1,8 +1,12 @@
 package cn.mdmbct.seckill.core.filter.token;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.AwardSeckill;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import cn.mdmbct.seckill.core.filter.Filter;
+import org.redisson.api.RateType;
+import org.redisson.api.RedissonClient;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -13,7 +17,7 @@ import cn.mdmbct.seckill.core.filter.Filter;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class TokenLimitFilter<R> extends Filter<R> {
+public abstract class TokenLimitFilter extends Filter {
 
     /**
      * the number of tokens generated per second
@@ -41,13 +45,13 @@ public abstract class TokenLimitFilter<R> extends Filter<R> {
      *                   if the object is not empty, the user who has not obtained the token will be put into the cache.
      *                   and next time gives the user a token directly.
      */
-    public TokenLimitFilter(int order, int ratePerSec, long timeout, NoAcquireParticipantCache cache, AwardSeckill seckill) {
+    public TokenLimitFilter(int order, int ratePerSec, long timeout, NoAcquireParticipantCache cache, ActivityConf seckill) {
         super(order);
         this.ratePerSec = ratePerSec;
         this.timeout = timeout;
         this.cache = cache;
         this.activityStartTime = seckill.getStartTime();
-        this.activityEndTime = activityStartTime + seckill.getDuration() * 1000;
+        this.activityEndTime = activityStartTime + seckill.getExpireTime();
     }
 
     /**
@@ -87,9 +91,32 @@ public abstract class TokenLimitFilter<R> extends Filter<R> {
 
     @Override
     protected void clear() {
-        super.clear();
         if (cache != null) {
             cache.clear();
         }
+    }
+
+    public static LocalTokenLimitFilter localTokenLimit(int order, int tokenPerSec,
+                                                 long timeout,
+                                                 LocalNoAcqParticipantCache cache,
+                                                 ActivityConf conf) {
+        return new LocalTokenLimitFilter(order, tokenPerSec, timeout, cache, conf);
+    }
+
+    public static LocalTokenLimitFilter localTokenLimit(int order,
+                                                        int tokenPerSec,
+                                                        int warmupTime,
+                                                        TimeUnit unit,
+                                                        long timeout,
+                                                        LocalNoAcqParticipantCache cache,
+                                                        ActivityConf conf) {
+        return new LocalTokenLimitFilter(order, tokenPerSec, warmupTime, unit, timeout, cache, conf);
+    }
+
+    public static RedissonTokenLimitFilter redisTokenLimit(RedissonClient redissonClient,
+                                                           int order, int ratePerSec, long timeout, RateType rateType,
+                                                           RedisNoAcquireParticipantCache cache,
+                                                           ActivityConf conf) {
+        return new RedissonTokenLimitFilter(redissonClient, order, ratePerSec, timeout, rateType, cache, conf);
     }
 }

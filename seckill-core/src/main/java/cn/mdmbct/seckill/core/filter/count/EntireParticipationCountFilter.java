@@ -9,19 +9,19 @@ import org.redisson.api.RedissonClient;
  * @modified mdmbct
  * @since 1.0
  */
-public class EntireParticipationCountFilter<R> extends CountFilter<R> {
+public class EntireParticipationCountFilter extends CountFilter {
 
-    private EntireParticipationCountFilter(int order, int entireParticipationCountLimit, Counter counter) {
+    public EntireParticipationCountFilter(int order, int entireParticipationCountLimit, Counter counter) {
         super(order, entireParticipationCountLimit, counter);
     }
 
-    public static <R> EntireParticipationCountFilter<R> localCount(int order, int entireParticipationCountLimit) {
-        return new EntireParticipationCountFilter<>(order, entireParticipationCountLimit,
+    public static EntireParticipationCountFilter localCount(int order, int entireParticipationCountLimit) {
+        return new EntireParticipationCountFilter(order, entireParticipationCountLimit,
                 new LocalEntireParticipationCount());
     }
 
-    public static <R> EntireParticipationCountFilter<R> redisCount(int order, int entireParticipationCountLimit, RedissonClient redissonClient, String seckillId) {
-        return new EntireParticipationCountFilter<>(order, entireParticipationCountLimit,
+    public static EntireParticipationCountFilter redisCount(RedissonClient redissonClient, int order, int entireParticipationCountLimit, String seckillId) {
+        return new EntireParticipationCountFilter(order, entireParticipationCountLimit,
                 new RedisEntireParticipationCount(redissonClient, seckillId));
     }
 

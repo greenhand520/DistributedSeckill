@@ -98,10 +98,10 @@ public class ZkAwardLock implements AwardLock {
     }
 
     public ZkAwardLock(ZkLockConfig lockConfig,
-                       Set<String> productIds) {
+                       Set<String> awardIds) {
         this.lockConfig = lockConfig;
-        this.mutexMap = new HashMap<>(productIds.size());
-        init(productIds);
+        this.mutexMap = new HashMap<>(awardIds.size());
+        init(awardIds);
     }
 
     private void init(Set<String> awardIds) {

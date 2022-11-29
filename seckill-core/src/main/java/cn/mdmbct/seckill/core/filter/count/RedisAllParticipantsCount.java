@@ -24,7 +24,7 @@ public class RedisAllParticipantsCount implements Counter {
     }
 
     @Override
-    public int increaseOne(String participantId) {
+    public int increaseOne() {
         RAtomicLong count = redissonClient.getAtomicLong(key);
         return (int) count.incrementAndGet();
     }

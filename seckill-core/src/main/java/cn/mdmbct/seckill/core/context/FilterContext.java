@@ -2,7 +2,8 @@ package cn.mdmbct.seckill.core.context;
 
 import cn.mdmbct.seckill.core.Participant;
 import cn.mdmbct.seckill.core.award.Award;
-import cn.mdmbct.seckill.core.award.CompleteRedPacket;
+import cn.mdmbct.seckill.core.award.CompleteRedEnvelope;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import cn.mdmbct.seckill.core.filter.Filter;
 import com.sun.istack.internal.NotNull;
 import lombok.Getter;
@@ -15,11 +16,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Getter
-public class FilterContext<R> {
+public class FilterContext {
     private final Thread thread;
-    private final List<Filter<R>> filtersPassed;
+    private final List<Filter> filtersPassed;
     @Setter
-    private Filter<R> filterNotPassed;
+    private Filter filterNotPassed;
     @Setter
     private String awardId;
     private final Participant participant;
@@ -28,13 +29,13 @@ public class FilterContext<R> {
 
     /**
      * the result of thread compete. <br>
-     * this member is {@link Award} while execute {@link cn.mdmbct.seckill.core.award.AwardSeckill} <br>
-     * and while execute {@link CompleteRedPacket}, it's {@link Double}, mean denomination participant get <br>
+     * this member is {@link Award} while execute {@link ActivityConf} <br>
+     * and while execute {@link CompleteRedEnvelope}, it's {@link Double}, mean denomination participant get <br>
      *
      * @see Award#Award(String, AtomicInteger)
      */
     @Setter
-    private R competeRes;
+    private Object competeRes;
     @Setter
     private String notPassMsg;
     public FilterContext(Thread thread, @NotNull Participant participant, @Nullable String awardId) {
@@ -43,14 +44,14 @@ public class FilterContext<R> {
         this.participant = participant;
         this.awardId = awardId;
     }
-    public void addFilterPassed(Filter<R> filter) {
+    public void addFilterPassed(Filter filter) {
         filtersPassed.add(filter);
     }
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("--------------------\n")
+        sb.append("-----------FilterContext-----------\n")
                 .append("ThreadId: ").append(thread.getId()).append("\n")
                 .append("ThreadName: ").append(thread.getName()).append("\n")
                 .append("FilterNotPassed: ");
@@ -61,10 +62,10 @@ public class FilterContext<R> {
             sb.append("null\n");
         }
 
-        sb.append("FiltersPassed: ");
+        sb.append("FiltersPassed:\n");
         if (filtersPassed.size() != 0) {
-            for (Filter<R> filter : filtersPassed) {
-                sb.append(filter.getClass().getName()).append("\t");
+            for (Filter filter : filtersPassed) {
+                sb.append(filter.getClass().getName()).append("\n");
             }
 
         }
@@ -76,7 +77,7 @@ public class FilterContext<R> {
 
         sb.append("NotPassMsg: ").append(notPassMsg).append("\n");
 
-        sb.append("--------------------\n");
+        sb.append("--------------------------------\n");
 
         return sb.toString();
     }

@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class SlidingWindowCount implements Counter {
+public abstract class BaseSlidingWindowCount implements Counter {
 
     /**
      * the count of blocks are divided per unit time, <br>
@@ -47,7 +47,7 @@ public abstract class SlidingWindowCount implements Counter {
 //        this.slotTime = windowTime / slot;
 //    }
 
-    public SlidingWindowCount(TimeUnit timeUnit) {
+    public BaseSlidingWindowCount(TimeUnit timeUnit) {
         this.windowTime = TimeUnit.MILLISECONDS.convert(1, timeUnit);
     }
 }

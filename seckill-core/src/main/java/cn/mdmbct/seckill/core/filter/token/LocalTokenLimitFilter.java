@@ -1,6 +1,6 @@
 package cn.mdmbct.seckill.core.filter.token;
 
-import cn.mdmbct.seckill.core.award.AwardSeckill;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import com.google.common.util.concurrent.RateLimiter;
 
 import java.util.concurrent.TimeUnit;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 0.1
  */
-public class LocalTokenLimitFilter<R> extends TokenLimitFilter<R> {
+public class LocalTokenLimitFilter extends TokenLimitFilter {
 
     private final RateLimiter rateLimiter;
 
@@ -26,13 +26,13 @@ public class LocalTokenLimitFilter<R> extends TokenLimitFilter<R> {
      * @param tokenPerSec token per sec
      * @param timeout     timeout
      * @param cache       no acq cache {@link LocalNoAcqParticipantCache}
-     * @see TokenLimitFilter#TokenLimitFilter(int, int, long, NoAcquireParticipantCache, AwardSeckill)
+     * @see TokenLimitFilter#TokenLimitFilter(int, int, long, NoAcquireParticipantCache, ActivityConf)
      */
     public LocalTokenLimitFilter(int order, int tokenPerSec,
                                  long timeout,
                                  LocalNoAcqParticipantCache cache,
-                                 AwardSeckill seckill) {
-        super(order, tokenPerSec, timeout, cache, seckill);
+                                 ActivityConf conf) {
+        super(order, tokenPerSec, timeout, cache, conf);
         this.rateLimiter = RateLimiter.create(tokenPerSec);
     }
 
@@ -51,8 +51,8 @@ public class LocalTokenLimitFilter<R> extends TokenLimitFilter<R> {
                                  TimeUnit unit,
                                  long timeout,
                                  LocalNoAcqParticipantCache cache,
-                                 AwardSeckill seckill) {
-        super(order, tokenPerSec, timeout, cache, seckill);
+                                 ActivityConf conf) {
+        super(order, tokenPerSec, timeout, cache, conf);
         this.rateLimiter = RateLimiter.create(tokenPerSec, warmupTime, unit);
     }
 

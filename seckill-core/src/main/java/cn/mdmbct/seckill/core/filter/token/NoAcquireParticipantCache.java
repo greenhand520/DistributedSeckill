@@ -1,5 +1,8 @@
 package cn.mdmbct.seckill.core.filter.token;
 
+import cn.mdmbct.seckill.core.activity.ActivityConf;
+import org.redisson.api.RedissonClient;
+
 /**
  * 没有获取到令牌的参加者缓存
  *
@@ -28,5 +31,12 @@ public interface NoAcquireParticipantCache {
 
     void clear();
 
+    static LocalNoAcqParticipantCache localCache() {
+        return new LocalNoAcqParticipantCache();
+    }
+
+    static RedisNoAcquireParticipantCache redisCache(RedissonClient redissonClient, ActivityConf conf) {
+        return new RedisNoAcquireParticipantCache(redissonClient, conf);
+    }
 
 }

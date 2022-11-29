@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>cn.mdmbct.seckill.core.filter.Filter</OriginalElement>
+  <nodes>
+    <node x="133.49031090828316" y="295.56">cn.mdmbct.seckill.core.filter.token.LocalTokenLimitFilter</node>
+    <node x="837.3406088537796" y="66.0">cn.mdmbct.seckill.core.filter.Filter</node>
+    <node x="95.49031090828316" y="356.79927661469935">cn.mdmbct.seckill.core.filter.token.RedissonTokenLimitFilter</node>
+    <node x="1042.7236310220126" y="207.3173719376391">cn.mdmbct.seckill.core.filter.AwardQuantityFilter</node>
+    <node x="574.5" y="207.3173719376391">cn.mdmbct.seckill.core.filter.count.CountFilter</node>
+    <node x="793.3365256124722" y="207.3173719376391">cn.mdmbct.seckill.core.filter.lottery.LotteryDrawFilter</node>
+    <node x="690.2893047807746" y="420.1932293986636">cn.mdmbct.seckill.core.filter.count.AllParticipantsCountFilter</node>
+    <node x="1320.110736431553" y="207.3173719376391">cn.mdmbct.seckill.core.filter.CompleteRedPacketStateFilter</node>
+    <node x="804.8406088537796" y="-20.46100140757237">java.lang.Comparable</node>
+    <node x="690.2893047807746" y="295.56">cn.mdmbct.seckill.core.filter.count.EveryParticipantCountFilter</node>
+    <node x="690.2893047807746" y="357.8766146993318">cn.mdmbct.seckill.core.filter.count.EntireParticipationCountFilter</node>
+    <node x="307.6634743875278" y="207.3173719376391">cn.mdmbct.seckill.core.filter.token.TokenLimitFilter</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="cn.mdmbct.seckill.core.filter.count.EveryParticipantCountFilter" target="cn.mdmbct.seckill.core.filter.count.CountFilter" relationship="GENERALIZATION">
+      <point x="-172.2948497461025" y="6.289523385300583" />
+      <point x="690.4944550346721" y="312.06" />
+      <point x="670.7233527437952" y="312.06" />
+      <point x="0.22335274379520342" y="16.820330437623284" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.token.TokenLimitFilter" target="cn.mdmbct.seckill.core.filter.Filter" relationship="GENERALIZATION">
+      <point x="13.53436989467184" y="-14.200479946280552" />
+      <point x="441.19784428219964" y="177.85094699331847" />
+      <point x="904.3406088537796" y="177.85094699331847" />
+      <point x="-0.0" y="16.5" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.CompleteRedPacketStateFilter" target="cn.mdmbct.seckill.core.filter.Filter" relationship="GENERALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="1487.110736431553" y="177.85094699331847" />
+      <point x="904.3406088537796" y="177.85094699331847" />
+      <point x="904.3406088537796" y="97.5" />
+      <point x="-67.0" y="15.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.EntireParticipationCountFilter" target="cn.mdmbct.seckill.core.filter.count.CountFilter" relationship="GENERALIZATION">
+      <point x="-184.7598626280619" y="0.8936889086859878" />
+      <point x="670.5" y="375.2703036080178" />
+      <point x="670.5" y="239.0507653815589" />
+      <point x="25.540409649592902" y="15.233393443919795" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.AwardQuantityFilter" target="cn.mdmbct.seckill.core.filter.Filter" relationship="GENERALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="1163.2236310220126" y="177.85094699331847" />
+      <point x="904.3406088537796" y="177.85094699331847" />
+      <point x="904.3406088537796" y="97.5" />
+      <point x="67.0" y="15.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.Filter" target="java.lang.Comparable" relationship="REALIZATION">
+      <point x="0.0" y="-16.5" />
+      <point x="0.0" y="16.5" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.token.LocalTokenLimitFilter" target="cn.mdmbct.seckill.core.filter.token.TokenLimitFilter" relationship="GENERALIZATION">
+      <point x="144.5" y="-0.0" />
+      <point x="442.6509081865966" y="312.06" />
+      <point x="14.98743379906881" y="16.665766118805493" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.CountFilter" target="cn.mdmbct.seckill.core.filter.Filter" relationship="GENERALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="670.5" y="177.85094699331847" />
+      <point x="904.3406088537796" y="177.85094699331847" />
+      <point x="904.3406088537796" y="82.5" />
+      <point x="67.0" y="-0.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.AllParticipantsCountFilter" target="cn.mdmbct.seckill.core.filter.count.CountFilter" relationship="GENERALIZATION">
+      <point x="-165.0" y="-0.0" />
+      <point x="670.5" y="436.6932293986636" />
+      <point x="-0.0" y="16.5" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.token.RedissonTokenLimitFilter" target="cn.mdmbct.seckill.core.filter.token.TokenLimitFilter" relationship="GENERALIZATION">
+      <point x="-163.5" y="-0.0" />
+      <point x="442.6634743875278" y="373.29927661469935" />
+      <point x="15.0" y="16.5" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.lottery.LotteryDrawFilter" target="cn.mdmbct.seckill.core.filter.Filter" relationship="GENERALIZATION">
+      <point x="4.504083241307399" y="-18.853572843919864" />
+      <point x="904.3406088537796" y="82.5" />
+      <point x="-67.0" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.5775377969762419" showDependencies="false" x="1252.5" y="578.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

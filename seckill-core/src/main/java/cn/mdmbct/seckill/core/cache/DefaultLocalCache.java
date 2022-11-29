@@ -38,6 +38,7 @@ public class DefaultLocalCache<K, V> extends BaseLocalCache<K, V> {
 
     @Override
     public V remove(K key) {
-        return cache.remove(key).getValue();
+        CacheObj<V> vCacheObj = cache.remove(key);
+        return vCacheObj == null ? null : vCacheObj.getValue(false);
     }
 }

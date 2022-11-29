@@ -1,11 +1,11 @@
 package cn.mdmbct.seckill.core.filter.count;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Statistics all the participants count impl by {@link HashMap} and {@link AtomicInteger}
+ * Statistics all the participants count impl by {@link AtomicInteger}
  *
  * @author mdmbct  mdmbct@outlook.com
  * @date 2022/11/20 上午9:23
@@ -14,25 +14,15 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LocalAllParticipantsCount implements Counter {
 
-    private final Map<String, AtomicInteger> countMap;
+    private final AtomicInteger count;
 
     public LocalAllParticipantsCount() {
-        this.countMap = new HashMap<>();
+        this.count = new AtomicInteger();
     }
 
     @Override
-    public int increaseOne(String participantId) {
-        AtomicInteger count = countMap.get(participantId);
-        if (count == null) {
-            countMap.put(participantId, new AtomicInteger(1));
-            return 1;
-        } else {
-            return count.incrementAndGet();
-        }
+    public int increaseOne() {
+        return count.incrementAndGet();
     }
 
-    @Override
-    public void clear() {
-        countMap.clear();
-    }
 }

@@ -1,6 +1,6 @@
 package cn.mdmbct.seckill.core.filter.token;
 
-import cn.mdmbct.seckill.core.award.AwardSeckill;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
@@ -16,10 +16,10 @@ public class RedisNoAcquireParticipantCache implements NoAcquireParticipantCache
 
     private final RMap<Object, Object> cache;
 
-    public RedisNoAcquireParticipantCache(RedissonClient redissonClient, AwardSeckill seckill) {
+    public RedisNoAcquireParticipantCache(RedissonClient redissonClient, ActivityConf conf) {
         // DSK:${seckillId}:NoAcquireParticipant
-        this.cache = redissonClient.getMap("DSK:" + seckill.getId() + ":NoAcquireParticipant");
-        this.cache.expire(Duration.ofMillis(seckill.getExpireTime()));
+        this.cache = redissonClient.getMap("DSK:" + conf.getId() + ":NoAcquireParticipant");
+        this.cache.expire(Duration.ofMillis(conf.getCacheExpiredTime()));
     }
 
     @Override

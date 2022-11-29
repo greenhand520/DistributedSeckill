@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.award.repository;
 
 import cn.mdmbct.seckill.core.award.Award;
-import cn.mdmbct.seckill.core.award.AwardSeckill;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 
@@ -23,16 +23,16 @@ public class RedisAwardRepository implements AwardRepository {
 
     private final Map<String, String> keyCache;
 
-    public RedisAwardRepository(RedissonClient redissonClient, AwardSeckill seckill) {
+    public RedisAwardRepository(RedissonClient redissonClient, ActivityConf conf) {
         this.redissonClient = redissonClient;
         // DSK:${seckillId}:AwardCount:{awardId}
-        String countCachePrefix = "DSK:" + seckill.getId() + ":AwardCount:";
-        keyCache = seckill.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> countCachePrefix + award.getId()));
+        String countCachePrefix = "DSK:" + conf.getId() + ":AwardCount:";
+        keyCache = conf.getAwards().stream().collect(Collectors.toMap(Award::getId, award -> countCachePrefix + award.getId()));
 
-        seckill.getAwards().forEach(award -> {
+        conf.getAwards().forEach(award -> {
             RAtomicLong awardCount = redissonClient.getAtomicLong(keyCache.get(award.getId()));
             awardCount.set(award.getRemainCount().longValue());
-            awardCount.expire(Duration.ofMillis(seckill.getExpireTime()));
+            awardCount.expire(Duration.ofMillis(conf.getCacheExpiredTime()));
         });
 
 
@@ -51,7 +51,11 @@ public class RedisAwardRepository implements AwardRepository {
     @Override
     public UpdateRes decrOne(String id) {
         try {
-            return new UpdateRes(true, (int) redissonClient.getAtomicLong(keyCache.get(id)).decrementAndGet());
+            int remain = (int) redissonClient.getAtomicLong(keyCache.get(id)).decrementAndGet();
+            if (remain >= 0) {
+                return new UpdateRes(true, remain);
+            }
+            return new UpdateRes(false, 0);
         } catch (Exception e) {
             e.printStackTrace();
             return new UpdateRes(false, 0);

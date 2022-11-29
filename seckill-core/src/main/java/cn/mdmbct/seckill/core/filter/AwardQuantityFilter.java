@@ -5,6 +5,8 @@ import cn.mdmbct.seckill.core.award.Award;
 import cn.mdmbct.seckill.core.award.repository.AwardRepository;
 import cn.mdmbct.seckill.core.lock.AwardLock;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * The award (or divided red packet) remain count filter is the last filter.<br>
  * if the stock quantity is > 0, it will reduce one and add the award (or divided red packet) to context,  otherwise not.
@@ -16,7 +18,7 @@ import cn.mdmbct.seckill.core.lock.AwardLock;
  * @modified mdmbct
  * @since 0.1
  */
-public class AwardQuantityFilter extends Filter<Award> {
+public class AwardQuantityFilter extends Filter {
 
     private final AwardRepository awardRepository;
 
@@ -26,6 +28,10 @@ public class AwardQuantityFilter extends Filter<Award> {
         super(LAST_FILTER_ORDER);
         this.awardRepository = awardRepository;
         this.lock = awardLock;
+    }
+
+    public static AwardQuantityFilter newInstance(AwardRepository awardRepository, AwardLock awardLock) {
+        return new AwardQuantityFilter(awardRepository, awardLock);
     }
 
     @Override
@@ -39,7 +45,7 @@ public class AwardQuantityFilter extends Filter<Award> {
             if (lock.tryLock(awardId)) {
                 AwardRepository.UpdateRes updateRes = awardRepository.decrOne(awardId);
                 if (updateRes.isSuccess()) {
-                    getFilterContext().setCompeteRes(new Award(awardId, updateRes.getNewCount()));
+                    getFilterContext().setCompeteRes(new Award(awardId, new AtomicInteger(updateRes.getNewCount())));
                     return true;
                 }
             }

@@ -1,8 +1,8 @@
 package cn.mdmbct.seckill.core.filter.lottery;
 
 import cn.mdmbct.seckill.core.Participant;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import cn.mdmbct.seckill.core.award.Award;
-import cn.mdmbct.seckill.core.award.AwardSeckill;
 import cn.mdmbct.seckill.core.filter.AwardQuantityFilter;
 import cn.mdmbct.seckill.core.filter.Filter;
 
@@ -18,24 +18,24 @@ import java.util.stream.Collectors;
  * @modified mdmbct
  * @since 0.1
  */
-public class LotteryDrawFilter extends Filter<Award> {
+public class LotteryDrawFilter extends Filter {
 
     private final Lottery lottery;
 
     private final List<Award> awards;
 
-    public LotteryDrawFilter(Lottery lottery, AwardSeckill awardSeckill) {
+    public LotteryDrawFilter(Lottery lottery, ActivityConf awardSeckill) {
         super(LAST_FILTER_ORDER - 1);
         this.lottery = lottery;
         lottery.setProbabilities(awardSeckill.getAwards().stream().map(Award::getProbability).collect(Collectors.toList()));
         this.awards = awardSeckill.getAwards();
     }
 
-    public static LotteryDrawFilter aliasLottery(AwardSeckill seckill) {
+    public static LotteryDrawFilter aliasLottery(ActivityConf seckill) {
         return new LotteryDrawFilter(new AliasLottery(), seckill);
     }
 
-    public static LotteryDrawFilter weightRandomLottery(AwardSeckill seckill) {
+    public static LotteryDrawFilter weightRandomLottery(ActivityConf seckill) {
         return new LotteryDrawFilter(new WeightRandomLottery(), seckill);
     }
 

@@ -1,8 +1,10 @@
 package cn.mdmbct.seckill.core.award.repository;
 
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.redisson.api.RedissonClient;
 
 /**
  * 商品、奖品管理的库 负责实际存储它们及数量的控制
@@ -40,6 +42,14 @@ public interface AwardRepository {
     UpdateRes updateCount(String id, int newCount);
 
     void clear();
+
+    static LocalAwardRepository local(ActivityConf conf) {
+        return new LocalAwardRepository(conf);
+    }
+
+    static RedisAwardRepository redis(RedissonClient redissonClient, ActivityConf conf) {
+        return new RedisAwardRepository(redissonClient, conf);
+    }
 
     @Getter
     @ToString

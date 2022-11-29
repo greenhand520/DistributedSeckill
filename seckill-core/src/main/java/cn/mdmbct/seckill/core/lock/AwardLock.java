@@ -1,5 +1,9 @@
 package cn.mdmbct.seckill.core.lock;
 
+import org.redisson.api.RedissonClient;
+
+import java.util.Set;
+
 /**
  * award lock interface
  *
@@ -24,5 +28,17 @@ public interface AwardLock {
      * @param id award (divided red packet id) id
      */
     void unLock(String id);
+
+    static LocalAwardLock local() {
+        return new LocalAwardLock();
+    }
+
+    static RedisAwardLock redis(RedissonClient redissonClient, RedisAwardLock.RedisAwardLockConfig config) {
+        return new RedisAwardLock(redissonClient, config);
+    }
+
+    static ZkAwardLock zookeeper(ZkAwardLock.ZkLockConfig config, Set<String> awardIds) {
+        return new ZkAwardLock(config, awardIds);
+    }
 
 }

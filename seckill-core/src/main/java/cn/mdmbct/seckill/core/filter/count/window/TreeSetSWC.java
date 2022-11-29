@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class TreeSetSWC extends SlidingWindowCount {
+public abstract class TreeSetSWC extends BaseSlidingWindowCount {
 
     private final TreeSet<Long> counter;
 
@@ -25,7 +25,7 @@ public abstract class TreeSetSWC extends SlidingWindowCount {
     public TreeSetSWC(TimeUnit timeUnit) {
         super(timeUnit);
         this.counter = new TreeSet<>();
-        this.clearJob = CacheClearService.instacne().addClearJob(this::clearExpired, windowTime);
+        this.clearJob = CacheClearService.instance().addClearJob(this::clearExpired, windowTime);
     }
 
     private void clearExpired() {

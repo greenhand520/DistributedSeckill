@@ -9,7 +9,7 @@ import cn.mdmbct.seckill.core.filter.Filter;
  * @modified mdmbct
  * @since 1.0
  */
-public abstract class CountFilter<R> extends Filter<R> {
+public abstract class CountFilter extends Filter {
 
     protected final int countLimit;
 
@@ -23,7 +23,6 @@ public abstract class CountFilter<R> extends Filter<R> {
 
     @Override
     public void clear() {
-        super.clear();
         counter.clear();
     }
 

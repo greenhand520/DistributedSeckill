@@ -1,6 +1,6 @@
 package cn.mdmbct.seckill.core.filter.token;
 
-import cn.mdmbct.seckill.core.award.AwardSeckill;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
@@ -17,17 +17,18 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public class RedissonTokenLimitFilter<R> extends TokenLimitFilter<R> {
+public class RedissonTokenLimitFilter extends TokenLimitFilter {
 
     private final RRateLimiter rateLimiter;
 
-    public RedissonTokenLimitFilter(int order, int ratePerSec, long timeout, RateType rateType,
+    public RedissonTokenLimitFilter(RedissonClient redissonClient,
+                                    int order, int ratePerSec, long timeout, RateType rateType,
                                     RedisNoAcquireParticipantCache cache,
-                                    RedissonClient redissonClient, AwardSeckill seckill) {
-        super(order, ratePerSec, timeout, cache, seckill);
-        this.rateLimiter = redissonClient.getRateLimiter("DSK:" + seckill.getId() + ":token");
+                                    ActivityConf conf) {
+        super(order, ratePerSec, timeout, cache, conf);
+        this.rateLimiter = redissonClient.getRateLimiter("DSK:" + conf.getId() + ":token");
         this.rateLimiter.setRate(rateType, ratePerSec, 1, RateIntervalUnit.SECONDS);
-        this.rateLimiter.expire(Duration.ofMillis(seckill.getExpireTime()));
+        this.rateLimiter.expire(Duration.ofMillis(conf.getCacheExpiredTime()));
     }
 
     @Override

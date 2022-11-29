@@ -51,7 +51,7 @@ public abstract class BaseLocalCache<K, V> implements Cache<K, V> {
 
     @Override
     public void autoClear(long delay) {
-        this.clearJob = CacheClearService.instacne().addClearJob(this::clear, delay);
+        this.clearJob = CacheClearService.instance().addClearJob(this::clear, delay);
     }
 
     @Override
@@ -67,19 +67,24 @@ public abstract class BaseLocalCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public void clear() {
+    public List<K> clear() {
+        List<K> ks = new ArrayList<>();
         for (K k : cache.keySet()) {
             CacheObj<V> vCacheObj = cache.get(k);
             if (vCacheObj.isExpired()) {
                 cache.remove(k);
+                ks.add(k);
                 clearListener.onRemove(k, vCacheObj.getValue());
             }
         }
+        return ks;
     }
 
     @Override
-    public void clearAll() {
+    public List<K> clearAll() {
+        List<K> keys = keys();
         cache.clear();
+        return keys;
     }
 
     public Collection<CacheObj<V>> getCacheObjs() {

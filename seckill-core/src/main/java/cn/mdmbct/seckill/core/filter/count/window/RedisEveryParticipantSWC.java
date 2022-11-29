@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public class RedisEveryParticipantSWC extends SlidingWindowCount {
+public class RedisEveryParticipantSWC extends BaseSlidingWindowCount {
 
     private final RedissonClient redissonClient;
 

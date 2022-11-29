@@ -1,5 +1,6 @@
-package cn.mdmbct.seckill.core.award;
+package cn.mdmbct.seckill.core.activity;
 
+import cn.mdmbct.seckill.core.award.Award;
 import com.sun.istack.internal.NotNull;
 import lombok.Getter;
 
@@ -16,45 +17,58 @@ import java.util.List;
  * @since 1.0
  */
 @Getter
-public class AwardSeckill implements Serializable {
+public class ActivityConf implements Serializable {
 
     private static final long serialVersionUID = 2409022301649566580L;
 
     /**
      * seckill activity id
      */
-    protected final String id;
-
-    /**
-     * seckill duration, unit: second
-     */
-    protected final long duration;
+    private final String id;
 
     /**
      * activity start time
      */
-    protected final long startTime;
+    private final long startTime;
 
     private List<Award> awards;
 
     private final long expireTime;
 
-    public AwardSeckill(@NotNull String id, long duration, long startTime, Collection<Award> awards) {
+    private ActivityConf(@NotNull String id, long duration, long startTime, Collection<Award> awards) {
+        this(id, duration, startTime);
+        setAwards(awards);
+    }
+
+    private ActivityConf(@NotNull String id, long duration, long startTime) {
         if (id == null) {
             throw new IllegalArgumentException("The param 'id' must not be mull");
         }
 
         if (duration <= 0 || startTime <= 0) {
-            throw new IllegalArgumentException("The parma 'ttl' and 'startTime' both must be > 0, the illegal parma are "
-                    + duration + " and " + startTime);
+            throw new IllegalArgumentException("The parma 'ttl' and 'startTime' both must be > 0, the illegal parma are " + duration + " and " + startTime);
         }
 
         this.id = id;
-        this.duration = duration;
         this.startTime = startTime;
+        this.expireTime = duration * 1000;
+    }
+
+    public long getCacheExpiredTime() {
         // Expires in 5 seconds after the activity ends
-        this.expireTime = duration * 1000 + 5000;
-        setAwards(awards);
+        return expireTime + 5000;
+    }
+
+    public long getEndTime() {
+        return startTime + expireTime;
+    }
+
+    public static ActivityConf awardSeckill(@NotNull String id, long duration, long startTime, Collection<Award> awards) {
+        return new ActivityConf(id, duration, startTime, awards);
+    }
+
+    public static ActivityConf completeRedPacketSeckill(@NotNull String id, long duration, long startTime) {
+        return new ActivityConf(id, duration, startTime);
     }
 
     /**
@@ -69,14 +83,14 @@ public class AwardSeckill implements Serializable {
 
         boolean isIllegal = false;
 
-        if (awards.stream().allMatch(a -> a.probability > 0 && a.probability < 1)) {
+        if (awards.stream().allMatch(a -> a.getProbability() > 0 && a.getProbability() < 1)) {
             this.awards = new ArrayList<>(awards);
 
             double sum = awards.stream().mapToDouble(Award::getProbability).sum();
             double p = 1 - sum;
             if (p > 0) {
                 awards.add(new Award.NoAward(p));
-            } else if (p < 0){
+            } else if (p < 0) {
                 isIllegal = true;
             }
         } else {

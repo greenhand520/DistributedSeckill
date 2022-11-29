@@ -35,11 +35,12 @@ public class CacheClearService {
         });
     }
 
-    public static CacheClearService instacne() {
+    public static CacheClearService instance() {
         if (clearService == null) {
             synchronized (CacheClearService.class) {
                 if (clearService == null) {
-                    return new CacheClearService();
+                    clearService = new CacheClearService();
+                    return clearService;
                 }
             }
         }

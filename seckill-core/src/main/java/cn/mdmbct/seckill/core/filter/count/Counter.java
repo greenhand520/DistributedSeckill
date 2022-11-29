@@ -10,6 +10,7 @@ public interface Counter {
 
     /**
      * increase one to the participation count of participant.
+     *
      * @param participantId participant id
      * @return the number participant in window  time
      */
@@ -19,6 +20,7 @@ public interface Counter {
 
     /**
      * all the number participant increase one.
+     *
      * @return the number participant in window  time
      */
     default int increaseOne() {

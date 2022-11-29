@@ -1,7 +1,7 @@
 package cn.mdmbct.seckill.core.award.repository;
 
 import cn.mdmbct.seckill.core.award.Award;
-import cn.mdmbct.seckill.core.award.AwardSeckill;
+import cn.mdmbct.seckill.core.activity.ActivityConf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +20,9 @@ public class LocalAwardRepository implements AwardRepository {
     // 加不加读写锁效果没什么区别 按理来说是不需要读写锁的 因为某线程更新商品信息前必须拥有该商品的锁
 //    private final ReentrantReadWriteLock readWriteLock;
 
-    public LocalAwardRepository(AwardSeckill seckill) {
-        this.cache = new HashMap<>(seckill.getAwards().size());
-        seckill.getAwards().forEach(award -> cache.put(award.getId(), award));
+    public LocalAwardRepository(ActivityConf conf) {
+        this.cache = new HashMap<>(conf.getAwards().size());
+        conf.getAwards().forEach(award -> cache.put(award.getId(), award));
     }
 
     @Override

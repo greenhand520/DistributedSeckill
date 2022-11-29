@@ -56,11 +56,13 @@ public interface Cache<K, V> extends Serializable {
 
     /**
      * clear the expired obj immediately.
+     *
+     * @return
      */
-    void clear();
+    List<K> clear();
 
     void setClearListener(CacheClearListener<K, V> listener);
 
-    void clearAll();
+    List<K> clearAll();
 
 }

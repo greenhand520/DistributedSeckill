@@ -1,10 +1,10 @@
 package cn.mdmbct.seckill.core.filter;
 
 import cn.mdmbct.seckill.core.Participant;
-import cn.mdmbct.seckill.core.award.CompleteRedPacket;
+import cn.mdmbct.seckill.core.award.CompleteRedEnvelope;
 
 /**
- * As the class name mean, is the last filter while you execute grab a complete red packet activity <br>
+ * As the class name mean, is the last filter while you execute grab a complete red envelope activity <br>
  * it will add the denomination participant competed to the context if red packet has remained money, <br>
  * otherwise, the denomination in context is "0.00"
  *
@@ -13,13 +13,13 @@ import cn.mdmbct.seckill.core.award.CompleteRedPacket;
  * @modified mdmbct
  * @since 1.0
  */
-public class CompleteRedPacketStateFilter extends Filter<Double> {
+public class CompleteRedEnvelopeStateFilter extends Filter {
 
-    private final CompleteRedPacket grabARedPacket;
+    private final CompleteRedEnvelope grabARedPacket;
 
-    private final CompleteRedPacket.SplitMethod splitMethod;
+    private final CompleteRedEnvelope.SplitMethod splitMethod;
 
-    public CompleteRedPacketStateFilter(CompleteRedPacket grabARedPacket, CompleteRedPacket.SplitMethod splitMethod) {
+    public CompleteRedEnvelopeStateFilter(CompleteRedEnvelope grabARedPacket, CompleteRedEnvelope.SplitMethod splitMethod) {
         super(LAST_FILTER_ORDER);
         this.grabARedPacket = grabARedPacket;
         this.splitMethod = splitMethod;

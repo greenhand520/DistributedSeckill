@@ -11,18 +11,18 @@ import org.redisson.api.RedissonClient;
  * @modified mdmbct
  * @since 0.1
  */
-public class AllParticipantsCountFilter<R> extends CountFilter<R> {
+public class AllParticipantsCountFilter extends CountFilter {
 
-    private AllParticipantsCountFilter(int order, int participantsCountLimit, Counter counter) {
+    public AllParticipantsCountFilter(int order, int participantsCountLimit, Counter counter) {
         super(order, participantsCountLimit, counter);
     }
 
-    public static <R> AllParticipantsCountFilter<R> localCount(int order, int participantsCountLimit) {
-        return new AllParticipantsCountFilter<>(order, participantsCountLimit, new LocalAllParticipantsCount());
+    public static AllParticipantsCountFilter localCount(int order, int participantsCountLimit) {
+        return new AllParticipantsCountFilter(order, participantsCountLimit, new LocalAllParticipantsCount());
     }
 
-    public static <R> AllParticipantsCountFilter<R> redisCount(int order, int participantsCountLimit, RedissonClient redissonClient, String seckillId) {
-        return new AllParticipantsCountFilter<>(order, participantsCountLimit,
+    public static AllParticipantsCountFilter redisCount(RedissonClient redissonClient, int order, int participantsCountLimit, String seckillId) {
+        return new AllParticipantsCountFilter(order, participantsCountLimit,
                 new RedisAllParticipantsCount(redissonClient, seckillId));
     }
 
@@ -39,7 +39,6 @@ public class AllParticipantsCountFilter<R> extends CountFilter<R> {
 
     @Override
     public void clear() {
-        super.clear();
         counter.clear();
     }
 }

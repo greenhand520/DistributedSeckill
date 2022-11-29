@@ -15,13 +15,13 @@ import cn.mdmbct.seckill.core.context.FilterContext;
  * @modified mdmbct
  * @since 0.1
  */
-public abstract class Filter<R> implements Comparable<Filter<R>> {
+public abstract class Filter implements Comparable<Filter> {
     public static final int FIRST_FILTER_ORDER = 0;
     public static final int LAST_FILTER_ORDER = Integer.MAX_VALUE;
 
-    protected ThreadLocal<FilterContext<R>> contextThreadLocal;
+    protected ThreadLocal<FilterContext> contextThreadLocal;
 
-    protected Filter<R> nextFilter;
+    protected Filter nextFilter;
 
     protected final int order;
 
@@ -33,7 +33,7 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
         this.order = order;
     }
 
-    protected void setContextThreadLocal(ThreadLocal<FilterContext<R>> contextThreadLocal) {
+    protected void setContextThreadLocal(ThreadLocal<FilterContext> contextThreadLocal) {
         this.contextThreadLocal = contextThreadLocal;
     }
 
@@ -42,13 +42,13 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
      *
      * @param context {@link FilterContext}
      */
-    protected void setFilterContext(FilterContext<R> context) {
+    protected void setFilterContext(FilterContext context) {
         // thread can get the value before remove
 //        contextThreadLocal.remove();
         contextThreadLocal.set(context);
     }
 
-    public FilterContext<R> getFilterContext() {
+    public FilterContext getFilterContext() {
         return contextThreadLocal.get();
     }
 
@@ -66,7 +66,7 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
      *
      * @param filter the next filter
      */
-    protected void nextFilter(Filter<R> filter) {
+    protected void nextFilter(Filter filter) {
         this.nextFilter = filter;
     }
 
@@ -106,7 +106,7 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
                 nextFilter.doFilter(participant, awardId);
             }
         } else {
-            final FilterContext<R> filterContext = getFilterContext();
+            final FilterContext filterContext = getFilterContext();
             filterContext.setFilterNotPassed(this);
             filterContext.setNotPassMsg(notPassMsg());
         }
@@ -117,7 +117,7 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
      * if you must clear memory for your filter, you must overwrite this method and super it.
      */
     protected void clear() {
-        contextThreadLocal.remove();
+//        contextThreadLocal.remove();
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class Filter<R> implements Comparable<Filter<R>> {
     public abstract String notPassMsg();
 
     @Override
-    public int compareTo(Filter<R> filter) {
+    public int compareTo(Filter filter) {
         return this.getOrder() - filter.getOrder();
     }
 }

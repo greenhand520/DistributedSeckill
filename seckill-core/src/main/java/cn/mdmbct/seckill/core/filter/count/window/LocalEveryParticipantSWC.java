@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @modified mdmbct
  * @since 1.0
  */
-public class LocalEveryParticipantSWC extends SlidingWindowCount {
+public class LocalEveryParticipantSWC extends BaseSlidingWindowCount {
 
 //    private final Cache<String, ReentrantLock> lockCache;
 //    private final Cache<String, TreeSet<Long>> countCache;
@@ -91,7 +91,7 @@ public class LocalEveryParticipantSWC extends SlidingWindowCount {
     public int increaseOne(String participantId) {
         TreeSetSWC count = countCache.putIfAbsent(participantId, TreeSetSWC.defaultLocalParticipantsSWC(TimeUnit.SECONDS),
                 windowTime, true);
-        return count.increaseOne(participantId);
+        return count.increaseOne();
     }
 
     @Override

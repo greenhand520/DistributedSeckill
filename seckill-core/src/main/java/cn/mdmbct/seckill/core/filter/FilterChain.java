@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
  * @modified mdmbct
  * @since 0.1
  */
-public class FilterChain<R> {
+public class FilterChain {
 
-    private final List<Filter<R>> filters;
+    private final List<Filter> filters;
 
-    private final ThreadLocal<FilterContext<R>> contextThreadLocal;
+    private final ThreadLocal<FilterContext> contextThreadLocal;
 
-    public FilterChain(List<Filter<R>> filters) {
+    public FilterChain(List<Filter> filters) {
         this.filters = filters;
         this.contextThreadLocal = new ThreadLocal<>();
         init();
@@ -39,8 +39,8 @@ public class FilterChain<R> {
      */
     public void filter(Participant participant, String awardId) {
         if (filters.size() != 0) {
-            final Filter<R> firstFilter = filters.get(0);
-            firstFilter.setFilterContext(new FilterContext<>(Thread.currentThread(), participant, awardId));
+            final Filter firstFilter = filters.get(0);
+            firstFilter.setFilterContext(new FilterContext(Thread.currentThread(), participant, awardId));
             firstFilter.filter(participant, awardId);
         }
     }
@@ -50,7 +50,7 @@ public class FilterChain<R> {
         checkOrder(filters);
         Collections.sort(filters);
         for (int i = 0; i < filters.size(); i++) {
-            Filter<R> filter = filters.get(i);
+            Filter filter = filters.get(i);
             filter.setContextThreadLocal(contextThreadLocal);
             if (i == filters.size() - 1) {
                 filter.nextFilter(null);
@@ -60,7 +60,7 @@ public class FilterChain<R> {
         }
     }
 
-    private void checkOrder(List<Filter<R>> filters) {
+    private void checkOrder(List<Filter> filters) {
         final List<Integer> orderList = filters.stream().map(Filter::getOrder).collect(Collectors.toList());
         final Set<Integer> orderSet = new HashSet<>(orderList);
         if (orderSet.size() < filters.size()) {
@@ -80,7 +80,7 @@ public class FilterChain<R> {
         filters.forEach(Filter::clear);
     }
 
-    public FilterContext<R> getFilterContext() {
+    public FilterContext getFilterContext() {
         return filters.get(0).getFilterContext();
     }
 }

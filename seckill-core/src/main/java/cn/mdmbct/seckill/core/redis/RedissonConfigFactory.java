@@ -1,5 +1,7 @@
 package cn.mdmbct.seckill.core.redis;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 import org.redisson.config.*;
 
 /**
@@ -11,6 +13,10 @@ import org.redisson.config.*;
  * @since 0.1
  */
 public class RedissonConfigFactory {
+
+    public static RedissonClient defaultLocalClient() {
+        return Redisson.create(RedissonConfigFactory.createRedissonConfig(new RedissonProperties()));
+    }
 
 
     public static Config createRedissonConfig(RedissonProperties properties) {

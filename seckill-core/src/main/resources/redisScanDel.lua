@@ -36,8 +36,6 @@ do
     i = i + 1
 end
 
-return total
-
 --local len = #KEYS
 --local i = 1
 --local total = 0

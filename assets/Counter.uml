@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>cn.mdmbct.seckill.core.filter.count.Counter</OriginalElement>
+  <nodes>
+    <node x="-536.5586759999999" y="-60.52000000000001">cn.mdmbct.seckill.core.filter.count.RedisAllParticipantsCount</node>
+    <node x="3.0570304000000306" y="60.13199999999995">cn.mdmbct.seckill.core.filter.count.window.RedisAllParticipantsSWC</node>
+    <node x="420.6850304000002" y="137.2639999999999">cn.mdmbct.seckill.core.filter.count.window.LocalAllParticipantsSWC</node>
+    <node x="418.7538240000001" y="-60.52000000000001">cn.mdmbct.seckill.core.filter.count.LocalEntireParticipationCount</node>
+    <node x="515.9530304000001" y="60.13199999999995">cn.mdmbct.seckill.core.filter.count.window.LocalEveryParticipantSWC</node>
+    <node x="791.1967936000001" y="-60.52000000000001">cn.mdmbct.seckill.core.filter.count.RedisEntireParticipationCount</node>
+    <node x="185.25382400000007" y="-161.20399999999992">cn.mdmbct.seckill.core.filter.count.Counter</node>
+    <node x="319.50503040000007" y="60.13199999999995">cn.mdmbct.seckill.core.filter.count.window.TreeSetSWC</node>
+    <node x="129.3108544000001" y="-60.52000000000001">cn.mdmbct.seckill.core.filter.count.window.SlidingWindowCount</node>
+    <node x="-202.1239107999999" y="-60.52000000000001">cn.mdmbct.seckill.core.filter.count.LocalAllParticipantsCount</node>
+    <node x="-328.3909696" y="60.13199999999995">cn.mdmbct.seckill.core.filter.count.window.RedisEveryParticipantSWC</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="cn.mdmbct.seckill.core.filter.count.window.SlidingWindowCount" target="cn.mdmbct.seckill.core.filter.count.Counter" relationship="REALIZATION">
+      <point x="-6.770752000000016" y="-17.596051199999977" />
+      <point x="248.04010240000008" y="-86.9440256" />
+      <point x="247.75382400000007" y="-86.9440256" />
+      <point x="0.0" y="-16.5" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.window.LocalEveryParticipantSWC" target="cn.mdmbct.seckill.core.filter.count.window.SlidingWindowCount" relationship="GENERALIZATION">
+      <point x="-140.0" y="-16.5" />
+      <point x="523.4530304000001" y="16.30599999999997" />
+      <point x="248.2028014079997" y="16.30599999999997" />
+      <point x="-6.60805299200041" y="16.187055872000002" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.RedisEntireParticipationCount" target="cn.mdmbct.seckill.core.filter.count.Counter" relationship="REALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="959.6967936000001" y="-90.77799999999996" />
+      <point x="247.75382400000012" y="-90.77799999999996" />
+      <point x="247.75382400000012" y="-159.70399999999992" />
+      <point x="62.5" y="-15.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.window.TreeSetSWC" target="cn.mdmbct.seckill.core.filter.count.window.SlidingWindowCount" relationship="GENERALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="401.00503040000007" y="16.30599999999997" />
+      <point x="248.0050304000001" y="16.30599999999997" />
+      <point x="-6.805824000000001" y="5.725292800000034" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.window.LocalAllParticipantsSWC" target="cn.mdmbct.seckill.core.filter.count.window.TreeSetSWC" relationship="GENERALIZATION">
+      <point x="-140.0" y="-0.0" />
+      <point x="401.00503040000007" y="153.7639999999999" />
+      <point x="-0.0" y="16.5" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.window.RedisAllParticipantsSWC" target="cn.mdmbct.seckill.core.filter.count.window.SlidingWindowCount" relationship="GENERALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="144.55703040000003" y="16.30599999999997" />
+      <point x="248.11868185599985" y="16.30599999999997" />
+      <point x="-6.692172544000243" y="15.362105087999936" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.LocalEntireParticipationCount" target="cn.mdmbct.seckill.core.filter.count.Counter" relationship="REALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="585.7538240000001" y="-90.77799999999996" />
+      <point x="247.75382400000007" y="-90.77799999999996" />
+      <point x="247.75382400000007" y="-144.70399999999992" />
+      <point x="62.5" y="-0.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.LocalAllParticipantsCount" target="cn.mdmbct.seckill.core.filter.count.Counter" relationship="REALIZATION">
+      <point x="-0.0" y="-16.5" />
+      <point x="-54.62391079999989" y="-90.77799999999996" />
+      <point x="247.7538240000001" y="-90.77799999999996" />
+      <point x="247.7538240000001" y="-144.70399999999992" />
+      <point x="-62.5" y="-0.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.RedisAllParticipantsCount" target="cn.mdmbct.seckill.core.filter.count.Counter" relationship="REALIZATION">
+      <point x="-149.0" y="-0.0" />
+      <point x="-395.7012933999998" y="-44.02000000000001" />
+      <point x="-395.7012933999998" y="-90.77799999999996" />
+      <point x="247.75382400000007" y="-90.77799999999996" />
+      <point x="247.75382400000007" y="-159.70399999999992" />
+      <point x="-62.5" y="-15.0" />
+    </edge>
+    <edge source="cn.mdmbct.seckill.core.filter.count.window.RedisEveryParticipantSWC" target="cn.mdmbct.seckill.core.filter.count.window.SlidingWindowCount" relationship="GENERALIZATION">
+      <point x="-15.0" y="-16.5" />
+      <point x="-194.3909696" y="16.30599999999997" />
+      <point x="248.00503040000007" y="16.30599999999997" />
+      <point x="248.00503040000007" y="-59.02000000000001" />
+      <point x="-125.5" y="-15.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.6400000000000006" showDependencies="false" x="291.50721985599955" y="48.05703800000026" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

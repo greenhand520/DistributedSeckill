@@ -46,4 +46,5 @@ spring:
       enabled: true
       additional-paths: src/main/java
       exclude: WEB-INF/**
-
+seckill:
+  redis-lock:
